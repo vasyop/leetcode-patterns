@@ -1,4 +1,4 @@
-[← Back to contents](00-contents.md)
+[← Back to contents](README.md)
 
 # Introduction
 
@@ -78,4 +78,4 @@ Do not _only_ read the chapters. After learning a technique, solve the practice 
 
 By the end, when you sit down with a new problem, you should be able to break it into familiar pieces, come up with a small number of plausible approaches, rule out the ones that won't fit the constraints, and implement the simplest solution that actually works.
 
-[← Back to contents](00-contents.md)
+[← Back to contents](README.md)

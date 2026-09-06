@@ -1,4 +1,4 @@
-[← Back to contents](00-contents.md)
+[← Back to contents](README.md)
 
 # Constraints and time complexity
 
@@ -127,4 +127,4 @@ The oracle is most valuable when your optimized solution has tricky edge cases o
 We will not worry about using an oracle for the most part of this book, but it's a very useful concept to know about.
 
 
-[← Back to contents](00-contents.md)
+[← Back to contents](README.md)

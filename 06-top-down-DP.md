@@ -1,4 +1,4 @@
-[← Back to contents](00-contents.md)
+[← Back to contents](README.md)
 
 # Top-down DP
 
@@ -2675,4 +2675,4 @@ function paintWalls(cost: number[], time: number[]): number {
 }
 ```
 
-[← Back to contents](00-contents.md)
+[← Back to contents](README.md)

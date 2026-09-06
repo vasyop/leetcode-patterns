@@ -7,7 +7,7 @@ carefully selected problems that are solved end to end.
 
 This is a work in progress — chapters are added as they are written.
 
-## [Start reading → Contents](00-contents.md)
+## Chapters
 
 1. [Disclaimer](01-disclaimer.md)
 2. [Introduction](02-introduction.md)

@@ -1,4 +1,4 @@
-[← Back to contents](00-contents.md)
+[← Back to contents](README.md)
 
 # Backtracking
 
@@ -590,4 +590,4 @@ function constructDistancedSequence(size: number): number[] {
 }
 ```
 
-[← Back to contents](00-contents.md)
+[← Back to contents](README.md)

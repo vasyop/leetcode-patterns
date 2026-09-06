@@ -1,4 +1,4 @@
-[← Back to contents](00-contents.md)
+[← Back to contents](README.md)
 
 # Depth-First Search (DFS)
 
@@ -665,4 +665,4 @@ function longestPath(parent: number[], s: string): number {
 }
 ```
 
-[← Back to contents](00-contents.md)
+[← Back to contents](README.md)
