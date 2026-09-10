@@ -20,7 +20,7 @@ Suppose the input is an array of length `n`. As a practical approximation:
 
 - If `n` is around `10⁶`, an `O(n)` solution should pass, and an `O(n log n)` solution will often pass. Anything significantly slower is unlikely to pass.
 - If `n` is around `10⁵`, `O(n log n)` and faster solutions should comfortably pass. `O(n log² n)` and `O(n √n)` may also pass, depending on the implementation and time limit.
-- If `n` is around `10⁴`, `O(n √n)` should usually pass. Adding another logarithmic factor may still be acceptable.
+- If `n` is around `10⁴`, `O(n √n)` and `O(n log² n)` pass easily. `O(n²)` is the borderline: about `10⁸` simple operations, which usually fails unless the work per iteration is tiny.
 - If `n` is around `10³`, an `O(n²)` or `O(n² log n)` solution will usually pass. An `O(n³)` solution probably will not, unless the constant factors are exceptionally small or the real input is more restricted than the headline constraint suggests.
 
 These are not mathematical laws. They are rough estimates intended to help you choose between possible approaches.
@@ -122,7 +122,7 @@ We are going to practice constrains analysis throughout the problems in this boo
 
 An oracle is a small program you build — or have ready before a contest — to catch bugs in your optimized solution. The idea is simple: write a brute-force solution you are confident is correct, write a random input generator that produces small inputs, then run both solutions on thousands of random tests and compare their outputs. When they disagree, you have a counterexample; when they agree consistently, you gain confidence that your optimized solution is correct.
 
-The oracle is most valuable when your optimized solution has tricky edge cases or non-obvious logic, but the brute force is short and obviously correct. It is also only practical when generating random inputs is straightforward — if constructing a valid random input requires significant effort, the oracle may not be worth building. But in many problems, especially those involving arrays, strings, or small graphs, a generator is a few lines and the brute force is a nested loop. In that case, an oracle can find a bug in minutes that might take an hour to find by reasoning alone. Other times, the problem has hidden test cases during contest.
+The oracle is most valuable when your optimized solution has tricky edge cases or non-obvious logic, but the brute force is short and obviously correct. It is also only practical when generating random inputs is straightforward — if constructing a valid random input requires significant effort, the oracle may not be worth building. But in many problems, especially those involving arrays, strings, or small graphs, a generator is a few lines and the brute force is a nested loop. In that case, an oracle can find a bug in minutes that might take an hour to find by reasoning alone. This matters even more during a contest, where the judge only tells you that some hidden test failed — an oracle is often the only way to actually see the counterexample.
 
 We will not worry about using an oracle for the most part of this book, but it's a very useful concept to know about.
 

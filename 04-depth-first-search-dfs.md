@@ -13,7 +13,7 @@
 
 ## What DFS is all about
 
-DFS is a way to visit every node in a graph or a tree. As you may recall, the only difference between a graph and a tree is that trees have no cycles. In the figure below, the graph has cycles: A -> C -> E -> B -> A (removing any one of the edges A-B, A-C, C-E, or B-E would turn it into a tree).
+DFS is a way to visit every node in a graph or a tree. As you may recall, a tree is just a graph that is connected and has no cycles. In the figure below, the graph has cycles: A -> C -> E -> B -> A (removing any one of the edges A-B, A-C, C-E, or B-E would turn it into a tree).
 
             GRAPH                            TREE
 
@@ -111,7 +111,7 @@ Personally, after thousands of problems, I've yet to run into issues with recurs
 
 ## DFS in the wild
 
-Sometimes a problem gives no obvious hint that DFS is involved — there may not be any graph or tree at all. But DFS is a natural fit for a very common pattern in competitive programming: exploring decisions. Consider a problem where we choose to place a "+" or a "-" between numbers, like [target sum](https://leetcode.com/problems/target-sum/). For each sign "slot", we try both options. In these cases, we can imagine a decision tree where going to the first child means choosing "+" and going to the second means choosing "-". Here is a decision tree for `nums = [1,1,1,1]; target = 1`:
+Sometimes a problem gives no obvious hint that DFS is involved — there may not be any graph or tree at all. But DFS is a natural fit for a very common pattern in competitive programming: exploring decisions. Consider a problem where we choose to place a "+" or a "-" between numbers, like [target sum](https://leetcode.com/problems/target-sum/). For each sign "slot", we try both options. In these cases, we can imagine a decision tree where going to the first child means choosing "+" and going to the second means choosing "-". Here is a decision tree for `nums = [1,1,1]; target = 1`:
 
                          sum = 0
                        /         \
@@ -205,7 +205,7 @@ Let's now have a look at [maximum width of binary tree](https://leetcode.com/pro
                   / \    / \   / \   / \
                  1   2  3   4 5   6  7  8
 
-Let's say we are at node 3 (marked with `*`) and we want to compute the position of its children. Before node 3, there are 2 nodes on the same level: 1 and 2. This means that before the first child of node 3, there are 4 children (2 chidren for node 1 and 2 fore node 2). So the position of the left child of node 3 must be `4 + 1 = 5`. So for each node, to find the position of the left child, just multiply its position - 1 by 2 and add 1: `leftPos = (pos - 1 * 2) + 1`. And the right child is immediately after it `rightPos = (pos - 1 * 2) + 2` or simply `pos * 2`. This DFS will explore our tree with the correct position computed and passed down for each node.
+Let's say we are at node 3 (marked with `*`) and we want to compute the position of its children. Before node 3, there are 2 nodes on the same level: 1 and 2. This means that before the first child of node 3, there are 4 children (2 chidren for node 1 and 2 fore node 2). So the position of the left child of node 3 must be `4 + 1 = 5`. So for each node, to find the position of the left child, just multiply its position - 1 by 2 and add 1: `leftPos = (pos - 1) * 2 + 1`. And the right child is immediately after it `rightPos = (pos - 1) * 2 + 2` or simply `pos * 2`. This DFS will explore our tree with the correct position computed and passed down for each node.
 
 ```TS
   function dfs(node: TreeNode, pos: number) {
@@ -244,7 +244,7 @@ function widthOfBinaryTree(root: TreeNode) {
     let maxWidth = 1;
 
     dfs(root, 0, 1);
-    return Number(maxWidth);
+    return maxWidth;
 
     function dfs(node: TreeNode, level: number, pos: number) {
       if(!node) {
@@ -416,25 +416,22 @@ function checkEqualPartitions(nums: number[], target: number): boolean {
 
 **[Smallest String Starting From Leaf](https://leetcode.com/problems/smallest-string-starting-from-leaf/)**
 
-As usual, we can manage the path with a stack. Just be careful to reverse the stack before comparing. What's the worst kind of input for this algorithm? We need as many leafs as possible and the path from the top as long as possible. The worst is a deep tree with only 1 child of size 4250 and then the deepest node has 4250 leafs. The total cost of building `candidate` and comparing it with `best` is `4250 ^ 2`. However, this is a binary tree, so the last child cannot have more than two children, so the worst shape is something like this:
+As usual, we can manage the path with a stack. Just be careful to reverse the stack before comparing. What's the worst kind of input for this algorithm? Each leaf costs `O(depth)` to build `candidate` and compare it with `best`, so we want as many leaves as possible, all as deep as possible. If this weren't a binary tree, a chain of 4250 nodes ending in a node with 4250 leaf children would cost about `4250 ^ 2`. In a binary tree a node has at most two children, so the worst shape is a spine of `n / 2` nodes where every spine node also hangs one leaf:
 
 ```
-          a
-        / \
-        a   L1
-      / \
-      a   L2
-    / \
-    a   L3
-  / \
-  a   L4
-  |\
-  | L5
-  |
-  L6
+            a
+           / \
+          a   L1
+         / \
+        a   L2
+       / \
+      a   L3
+     / \
+    a   L4
+   ...
 ```
 
-Actual worst case cost: 1 + 2 + ... + n/2 ≈ (n/2)²/2 = 4250²/8.
+The leaves sit at depths `1, 2, ..., n / 2`, so the total cost is `1 + 2 + ... + n / 2 ≈ (n / 2)² / 2 = 4250² / 2`, about 9 million steps at the maximum `n = 8500`.
 
 ```TS
 function smallestFromLeaf(root: TreeNode | null): string {
@@ -539,7 +536,7 @@ function countSubTrees(n: number, edges: number[][], labels: string): number[] {
 
 **[Partition String into Minimum Beautiful Substrings](https://leetcode.com/problems/partition-string-into-minimum-beautiful-substrings/)**
 
-From each index, we try all possible powers of 5 that start from this index. n <= 15 is very important. With each substing, we reduce the string by at least 3, because the smallest power of 5 is 101. In the worst case, we make 15 / 3 = 5 choices. So our maximum tree depth is 5. And for each node, we traverse at most the entire string because of the for loop. So the total number of nodes in the tree cannot exceed 15 ^ 5 < 1M.
+From each index, we try all possible powers of 5 that start from this index. `n <= 15` is very important. Every node of the tree is one way of cutting a prefix of the string into powers of 5, and there are only 14 places to put a cut in a string of 15 characters, so the tree has fewer than `2 ^ 15` nodes no matter what. Note that `1` is a power of 5 too (`5 ^ 0`), so a piece can be a single character and the tree can be 15 levels deep — `"111111111111111"` splits into 15 pieces. For each node, we traverse at most the rest of the string because of the for loop, so the total work is under `2 ^ 15 * 15`, about 500 thousand steps.
 
 ```TS
 function minimumBeautifulSubstrings(s: string): number {
@@ -627,7 +624,7 @@ function lexicalOrder(n: number): number[] {
 
 **[Longest Path With Different Adjacent Characters](https://leetcode.com/problems/longest-path-with-different-adjacent-characters/)**
 
-Each node returns up its longest downward chain of distinct adjacent labels. The best path through a node joins its two longest child chains — but only chains from children whose label differs from the node's own count.
+Each node returns up its longest downward chain of distinct adjacent labels. The best path through a node joins its two longest child chains — but only chains from children whose label differs from the node's own.
 
 ```TS
 function longestPath(parent: number[], s: string): number {

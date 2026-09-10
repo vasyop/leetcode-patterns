@@ -1,4 +1,4 @@
-# DFS traversal - the path list at every step
+# DFS traversal - the current node at every step
 
 The node in brackets is where DFS currently is.
 

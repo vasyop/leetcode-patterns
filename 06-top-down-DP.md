@@ -50,7 +50,7 @@ function rob(nums: number[]): number {
 
 The parameter `i` is the house we are currently at. If we rob, we return `nums[i] + best(i + 2)` — we go to `i + 2` because `i + 1` is no longer allowed. If we don't rob, we simply move to the next house and return `best(i + 1)`. Note that the base case is `i >= n` and not `i === n`: robbing the last house lands us on `n + 1`, one past the end we would expect.
 
-The problem, of course, is that this DFS is far too slow. Two children per node, one level per house", which for `n = 100` gives `2 ** 101 - 1` nodes. The real count is a little kinder, because the rob branch eats two houses instead of one — the node count follows the Fibonacci numbers and works out to roughly `2 ** 71`. It makes no difference. Our magic number from the constraints chapter is 25 million, which is about `2 ** 24`, but `2 ** 71` is astronomic.
+The problem, of course, is that this DFS is far too slow. Two children per node, one level per house, which for `n = 100` gives `2 ** 101 - 1` nodes. The real count is a little kinder, because the rob branch eats two houses instead of one — the node count follows the Fibonacci numbers and works out to roughly `2 ** 71`. It makes no difference. Our magic number from the constraints chapter is 25 million, which is about `2 ** 24`, but `2 ** 71` is astronomic.
 
 ## Repeated subtrees
 
@@ -320,9 +320,9 @@ function maxSumDivThree(a: number[]): number {
 
 Two things to mention here. First, `Array(3).fill(null).map(() => Array(n).fill(-1))` is much faster than `Array(n).fill(null).map(() => Array(3).fill(-1))`, so `dp[mod3][i]` instead of `dp[i][mod3]` is intentional, even though the code would pass regardless (for other problems, it won't).
 
-Secondly, return a very low value `-1e11` for terminal states with `m != 0`. `-1e11` is even smaller than `-sum(a)` This ensures that `Math.max(...)` will never prefer the direction toward a final state with `m != 0`, and it shouldn't, only `n|0` is a valid final state. The implicit convention here is that if our function returns a negative value (other than -1), there is no subset of elements starting from that index such that the sum will be 0. With an array such that `[2, 2]`, there is no way to pick a subset that has `sum % 3 === 0`. In this case, the best subset is the empty subset that always has `m === 0`.
+Secondly, return a very low value `-1e11` for terminal states with `m != 0`. `-1e11` is even smaller than `-sum(a)` This ensures that `Math.max(...)` will never prefer the direction toward a final state with `m != 0`, and it shouldn't, only `n|0` is a valid final state. The implicit convention here is that if our function returns a negative value (other than -1), there is no subset of elements starting from that index such that the sum will be 0. With an array such as `[2, 2]`, there is no way to pick a non-empty subset that has `sum % 3 === 0`. In this case, the best subset is the empty subset that always has `m === 0`.
 
-Cost: `3 * n` nodes with 2 transitions for each one. With `n = 1e4`, this is not even 1 million steps.
+Cost: `3 * n` nodes with 2 transitions for each one. With `n = 4 * 10⁴`, this is not even 1 million steps.
 
 There is a way to make the `-1e11` trick more explicit - return some special value such that `-Infinity` to indicate a state that is invalid because it only leads to invalid states. The code is more explicit, but somewhat uglier:
 
@@ -610,7 +610,7 @@ const dp: number[] = Array(3 * n * K1).fill(-1);
 dp[((status + 1) * n + i) * K1 + remK] = best;
 ```
 
-The difference is not subtle. Filling and reading back every entry of a 300 by 300 by 16 table — 1.44 million of them, the size Count Paths With the Given XOR Value actually uses — takes about 13 ms nested and about 3.5 ms flat on Node 22. Going one step further to `new Int32Array(size)` gets it to about 2 ms. This makes it almost 7 times faster. In more serious DP problems, you can legitimately run into 1000ms (guaranteed pass) vs 6500ms (guaranteed fail) situations. In some DP problems, we can have 3D, 4D and 5D nested arrays, so this optimization becomes a must. Even though the time complexity and number of steps are exactly the same, object layout in memory is always a hidden threat to watch out for, at least in the JS world.
+The difference is not subtle. Filling and reading back every entry of a 300 by 300 by 16 table — 1.44 million of them, the size Count Paths With the Given XOR Value actually uses — takes about 13 ms nested and about 3.5 ms flat on Node 22. Going one step further to `new Int32Array(size)` gets it to about 2 ms. This makes it almost 7 times faster. In more serious DP problems, you can legitimately run into 1000ms (guaranteed pass) vs 6500ms (guaranteed fail) situations. In some DP problems, we can have 3D, 4D and 5D nested arrays, so this optimization becomes a must. Even though the time complexity and number of steps are exactly the same, object layout in memory is always a hidden threat to watch out for, at least in the JS world. In the solved problems below, the tables are mostly already flattened out of habit.
 
 ## Closing notes on top-down DP
 
@@ -703,7 +703,7 @@ Another knapsack take-no-take. Once we reach some balloon index `i`, regardless 
 
 There is another trick needed: we use stub color 26 to indicate that there is no previous balloon, so we can keep any balloon next.
 
-Cost: `n * 26` states with 2 transitions each.
+Cost: `n * 27` states with 2 transitions each.
 
 ```TS
 function minCost(colors: string, neededTime: number[]): number {
@@ -738,13 +738,15 @@ function minCost(colors: string, neededTime: number[]): number {
 
 We track how far we are in nums1 and nums2 in our state. The only wrinkle here is that the subsequences must be non-empty. With all-negative numbers in one array and all-positive in the other, the best dot product is negative, and an empty pairing scoring 0 would beat it. So a third field records whether anything has been paired yet, and we only accept walks that paired at least once. State = `(i, j, tookAtLeastOnce)`.
 
+Note the `null` sentinel in the memo. `-1` is a perfectly legal dot product here (`[1]` against `[-1]`).
+
 Cost: `(n + 1) * (m + 1) * 2` states with 3 transitions each.
 
 ```TS
 function maxDotProduct(nums1: number[], nums2: number[]): number {
     const n = nums1.length;
     const m = nums2.length;
-    const dp: number[] = Array((n + 1) * (m + 1) * 2).fill(-1);
+    const dp: (number | null)[] = Array((n + 1) * (m + 1) * 2).fill(null);
 
     return best(0, 0, 0);
 
@@ -756,8 +758,9 @@ function maxDotProduct(nums1: number[], nums2: number[]): number {
         }
 
         const key = (i * (m + 1) + j) * 2 + took;
-        if (dp[key] !== -1) {
-            return dp[key];
+        const hit = dp[key];
+        if (hit !== null) {
+            return hit;
         }
 
         let res = -1e15;
@@ -802,8 +805,7 @@ function countVowelPermutation(n: number): number {
     }
     return res;
 
-    // how many valid strings of length "len" start with the last letter being "last"
-    // and the last one being vowel `last`
+    // how many ways to append `len` more letters after a string whose last vowel is `last`
     function count(len: number, last: number): number {
         if (len === 0) {
             return 1;
@@ -1223,9 +1225,8 @@ Cost: `n * 201 * 201` states with 3 transitions each — 200 \* 201 \* 201, abou
 function subsequencePairCount(nums: number[]): number {
     const MOD = 1e9 + 7;
     const n = nums.length;
-    const dp: number[][][] = Array(n).fill(null).map(() =>
-        Array(201).fill(null).map(() => Array(201).fill(-1)),
-    );
+    // 8 million entries, so a flat array rather than 200 * 201 nested rows
+    const dp: number[] = Array(n * 201 * 201).fill(-1);
 
     return count(0, 0, 0);
 
@@ -1236,15 +1237,16 @@ function subsequencePairCount(nums: number[]): number {
             return g1 !== 0 && g1 === g2 ? 1 : 0;
         }
 
-        if (dp[i][g1][g2] !== -1) {
-            return dp[i][g1][g2];
+        const key = (i * 201 + g1) * 201 + g2;
+        if (dp[key] !== -1) {
+            return dp[key];
         }
 
         const skip = count(i + 1, g1, g2);
         const first = count(i + 1, gcd(g1, nums[i]), g2);
         const second = count(i + 1, g1, gcd(g2, nums[i]));
 
-        return dp[i][g1][g2] = (skip + first + second) % MOD;
+        return dp[key] = (skip + first + second) % MOD;
     }
 
     function gcd(a: number, b: number): number {
@@ -1260,7 +1262,7 @@ function subsequencePairCount(nums: number[]): number {
 
 **[Count Paths With the Given XOR Value](https://leetcode.com/problems/count-paths-with-the-given-xor-value/)**
 
-Each cell on the grid maps to 16 different states, one for each possible value that can result from xoring previous cells on
+Each cell on the grid maps to 16 different states, one for each possible value that can result from xoring the previous cells on the path. Cell values and `k` are below 16, so the running xor stays below 16 as well, which makes the state `(row, col, xor so far)`. From each cell we move right or down, and at the bottom-right corner we count the path if the accumulated xor is exactly `k`.
 
 Cost: `m * n * 16` states with 2 transitions each — at the maximum 300 by 300 grid, 1.4 million states.
 
@@ -1394,7 +1396,7 @@ function maximumAmount(coins: number[][]): number {
 
 With `n = 22`, bitwise DP should quickly come to mind. Here, we need to find an optimal permutation, so our state becomes the set of nodes that were already taken and we want to find the best (with highest score) way to arrage the remaining nodes.
 
-Cost: `2 ** n` states with `n` transitions each — 4 million \* 22, about 88 million, down from 22! orderings. That's almost 4 times slower than our 25 million guideline, and indeed it passes in 1.4s, not exactly the fastest, but that's ok.
+Cost: `2 ** n` states with `n` transitions each — 4 million \* 22, about 92 million, down from 22! orderings. That's almost 4 times slower than our 25 million guideline, and indeed it passes in 1.4s, not exactly the fastest, but that's ok.
 
 The reason it passes at all is because in a big complex DAG with a lot of dependencies, a lot of states can't be reached. For some new A -> B dependency, each permutation where node B comes before node A is no longer valid so its entire subgraph is no longer reachable - the entire DAG shrinks. The work done inside the for loop is also very little: a shift, an or, two compares, and no recursive call at all unless the node is ready, so 92 million is acceptable in this case.
 
@@ -1441,8 +1443,7 @@ Another "find best path in grid" type problem, but this time we need to find a p
 Cost: `m * n * k` states with 2 transitions each — about 16 million at the top end, all of it O(1) work.
 
 ```TS
-const SCORE = [0, 1, 2];
-const COST = [0, 1, 1];
+const COST = [0, 1, 1]; // a cell with value 0 is free, any other cell costs 1
 
 function maxPathScore(grid: number[][], k: number): number {
     const m = grid.length;
@@ -1494,12 +1495,12 @@ function specialPerm(nums: number[]): number {
 
     let res = 0;
     for (let i = 0; i < n; i++) {
-        res = count(i, 1 << i)
+        res += count(i, 1 << i)
         res %= MOD;
     }
     return res;
 
-    // the number of ways to lay out the numbers outside `used` after nums[last]
+    // the number of ways to lay out the numbers outside `taken` after nums[last]
     function count(last: number, taken: number): number {
         if (taken === ALL) {
             return 1;
@@ -1835,9 +1836,9 @@ function mostSimilar(n: number, roads: number[][], names: string[], targetPath: 
 
 **[Palindrome Partitioning III](https://leetcode.com/problems/palindrome-partitioning-iii/)**
 
-The first state that comes to mind is `(i, pieces still to cut)`, but the problem is that we need to try all possible centers and all possible endings inside the recursive function. So our work inside the function will be `n ^ 2` and with `n ^ 2` states that gives us `n ^ 4` which we can't afford without forcing our luck.
+The first state that comes to mind is `(i, pieces still to cut)`, but the problem is that we need to try all possible endings inside the recursive function, and for each ending count the characters that have to change — another `O(n)` loop. So our work inside the function will be `n ^ 2` and with `n ^ 2` states that gives us `n ^ 4` which we can't afford without forcing our luck.
 
-The key: Before jumping to DP, we can precompute the cost of turning all possible substrings into a plindrome by using the expand from center technique.
+The key: Before jumping to DP, we can precompute the cost of turning every substring into a palindrome by using the expand from center technique.
 
 Only then the DP itself: state = `(i, pieces still to cut)`, and inside the function we now only need to _spend_ `O(n)` to try all possible endings, and query our precomputed table for each.
 
@@ -1847,15 +1848,21 @@ Cost = `number of states × work per state` says `n * k * n`, and with `n <= 100
 function palindromePartition(s: string, k: number): number {
     const n = s.length;
 
-    // changes[l][r] = characters to change to make s[l..r] a palindrome
+    // changes[l][r] = characters to change to make s[l..r] a palindrome,
+    // filled by expanding outwards from every center one pair at a time
     const changes: number[][] = Array(n).fill(null).map(() => Array(n).fill(0));
-    for (let l = 0; l < n; l++) {
-        for (let r = l; r < n; r++) {
-            let c = 0;
-            for (let a = l, b = r; a < b; a++, b--) {
-                if (s[a] !== s[b]) {
-                    c++;
-                }
+    for (let center = 0; center < n; center++) {
+        // odd length: l and r start on the same character
+        for (let l = center, r = center, c = 0; l >= 0 && r < n; l--, r++) {
+            if (s[l] !== s[r]) {
+                c++;
+            }
+            changes[l][r] = c;
+        }
+        // even length: l and r start on two neighbouring characters
+        for (let l = center, r = center + 1, c = 0; l >= 0 && r < n; l--, r++) {
+            if (s[l] !== s[r]) {
+                c++;
             }
             changes[l][r] = c;
         }
@@ -1880,7 +1887,7 @@ function palindromePartition(s: string, k: number): number {
         }
 
         let res = 1e11;
-        for (let j = i; j < n; j++) { // the last piece is s[j..i]
+        for (let j = i; j < n; j++) { // the next piece is s[i..j]
             res = Math.min(res, changes[i][j] + best(j + 1, p - 1));
         }
 
@@ -2054,7 +2061,7 @@ function shortestCommonSupersequence(s1: string, s2: string): string {
 
 **[Stickers to Spell Word](https://leetcode.com/problems/stickers-to-spell-word/)**
 
-Our state can simply  be which letter indicies were already covered on our target so that restricts the number of nodes to 2 ^ 15. We still have enough steps to spend inside the function body to try each possible word and see if it reduces our state. If it doesn't, there's no point in taking that sticker. We can precompute the counts of each letter in each sticker before the recursion. Then, inside the recursive function, to check how each sticker changes our state, we check each letter in our target from left to right. The overall cost is 2 ^ 15 \* 50 \* 10 = 25 million.
+Our state can simply  be which letter indicies were already covered on our target so that restricts the number of nodes to 2 ^ 15. We still have enough steps to spend inside the function body to try each possible word and see if it reduces our state. If it doesn't, there's no point in taking that sticker. We can precompute the counts of each letter in each sticker before the recursion. Then, inside the recursive function, to check how each sticker changes our state, we check each letter in our target from left to right. The overall cost is 2 ^ 15 \* 50 \* 15 ≈ 25 million.
 
 ```TS
 function minStickers(stickers: string[], target: string): number {
@@ -2192,7 +2199,9 @@ function minimumIncrements(nums: number[], target: number[]): number {
 
 One ideea is to assign robots to factories one at a time from left to right, and that brings the robot index `ri` into our state. For the rest of the state, we somehow need to compress the state of the factories as much as possible. We could add to the state the factory index `fi` and how many repairs were already performed at that factory as `used`. `fi = 3` and `used = 2` would mean that the factory at index 3 has `factory[3] - 2` repairs left and all the next factories have no used repairs. Potential cost: `robots * factories * (robots + 1)` states with 2 transitions each — 100 \* 100 \* 101, about a million.
 
-But that would mean that we can never express a state such as "3 factories, first and third are fully unused, and second is fully used", which can of course, happen. We need to explore the following question: Consider two robots `r1` and `r2`, is it ever a good ideea for `r1` to go to some factory `f1` and `r2` to go to another factory before f1 (say `f0`)? Suppose we have this situation. The cost is `(r1 - f1) + (r2 - f0)`. If we make `r1` go to `f0` and `r2` go to `f1`, the cost is `(r1 - f0) + (r2 - f1)`, which is exactly the same. This means that if an solution exists such that a higher index robot goes to a lower index factory, it can always be converted to a solution where this is not the case. (this might seem intuitive, but it's always a good ideea to write a small proof like this to make sure). So indeed the `(ri, fi, used)` state ideea is correct.
+But that would mean that we can never express a state such as "3 factories, first and third are fully unused, and second is fully used", which can of course, happen. We need to explore the following question: Consider two robots `r1` and `r2`, is it ever a good ideea for `r1` to go to some factory `f1` <= `r1` and `r2` to go to some factory `f0` <= `f1`? Suppose we have this "crossed" situation. The cost is `(r1 - f1) + (r2 - f0)`. If we make `r1` go to `f0` and `r2` go to `f1`, the cost is `(r1 - f0) + (r2 - f1)`, which is exactly the same. We can think about all possible ways to arrange `r1`, `r2`, `f0`, `f1` and we will find that in all cases, uncrossing the robot-factory pairs is just as good as crossing, if not better.
+
+This means that if an solution exists such there is some robot-factory crossing, it can always be converted to a solution where there isn't any crossing and the cost is lower or equal. (this might seem intuitive, but it's always a good ideea to write a small proof like this to make sure). So indeed the `(ri, fi, used)` state ideea is correct.
 
 ```TS
 function minimumTotalDistance(robot: number[], factory: number[][]): number {
@@ -2493,7 +2502,7 @@ function maximumANDSum(nums: number[], numSlots: number): number {
 
 ```
 
-One way to optimize this: try to get rid of `filled`. We can overcome the problem that `n` can be lower than `numSlots * 2` by creating some dummy numbers that don't affect the final result so that `n === numSlots * 2` always. This way, each slot will receive exactly two numbers so we don't have to keep track of how many numbers it received (`filled`). And which number gives 0 when &-ed with anything? 0 itself - and since the AND sum is just a sum, a 0 contributes exactly nothing."
+One way to optimize this: try to get rid of `filled`. We can overcome the problem that `n` can be lower than `numSlots * 2` by creating some dummy numbers that don't affect the final result so that `n === numSlots * 2` always. This way, each slot will receive exactly two numbers so we don't have to keep track of how many numbers it received (`filled`). And which number gives 0 when &-ed with anything? 0 itself - and since the AND sum is just a sum, a 0 contributes exactly nothing.
 
 ```TS
     while (a.length < numSlots * 2) {
@@ -2598,11 +2607,9 @@ By now your intuition should point to a state such as `(index, sum1, sum2)`. `su
 
 There is one important observation we need to make to reduce the number of states: we can use just `sum1` and `index` to identify a state because `sum2` is always the same as long as `sum1` and `index` don't change: `total sum up until index` - `sum1`. So the actual number of states is `n * maxPossibleSum`. And we can even pass `sum2` as an argument to the recursive function, but the state key does not depend on it. So our state is simply `(index, sum1)`, but we still have the problem that `maxPossibleSum` can get much higher than `k`.
 
-Next point to realize (bear with me) is if both `sum1` and `sum2` are >= `k`, we have reached a point in our DAG where all following `nums` can go either to `sum1` or `sum2`. So if both `sum1` and `sum2` are >= `k`, for a fixed `index`, no matter what the current state `(index, sum1)` returns, all `(index, sum1)` states will return the same value, because the `>=k` condition has already been satisfied for both sums. So for some fixed `index`, if `sum1` and `sum2` are >= `k`, all `(index, sum1)` states are equivalent. So we can identify our state as `(index, Math.min(sum1, sum2, k))`. Remember the recursive question: "How many partitions are there from `index` onwards such that `sum1` reaches `k` or more and `sum2` reaches `k` or more?".
+Next point to realize (bear with me) is if both `sum1` and `sum2` are >= `k`, we have reached a point in our DP DAG where all following `nums` can go either to `sum1` or `sum2`. So if both `sum1` and `sum2` are >= `k`, for a fixed `index`, no matter what the current state `(index, sum1)` returns, all `(index, sum1)` states will return the same value, because the `>=k` condition has already been satisfied for both sums. So for some fixed `index`, if `sum1` and `sum2` are >= `k`, all `(index, sum1)` states are equivalent. So we can identify our state as `(index, Math.min(sum1, sum2, k))`. The only thing that makes a state unique is the lower of the two sums (because the higher sum is determing by the lower one), and only if it's lower than k.
 
-In one sentance: The only thing that makes a state unique is the lower of the two sums, and only if it's lower than k.
-
-If this is starting to get frustratingly hard for you, I have good news: this is leetcode ~2400 rating. Already less than 1% of contestants can tackle this problem, even though we don't need to juggle a lot of concepts (just top-down DP is enough) to solve it.
+If this is starting to get frustrating, I have good news: this is leetcode ~2400 rating. Just around 0.5% of contestants can tackle this problem, even though we don't need to juggle a lot of concepts (just top-down DP is enough) to solve it.
 
 ```TS
 function countPartitions(nums: number[], k: number): number {

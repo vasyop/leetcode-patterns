@@ -164,7 +164,6 @@ bkt(node):
 - https://leetcode.com/problems/the-k-th-lexicographical-string-of-all-happy-strings-of-length-n/
 - https://leetcode.com/problems/numbers-with-same-consecutive-differences/
 - https://leetcode.com/problems/combinations/
-- https://leetcode.com/problems/combination-sum/
 - https://leetcode.com/problems/subsets-ii/
 - https://leetcode.com/problems/letter-tile-possibilities/
 - https://leetcode.com/problems/beautiful-arrangement/
@@ -297,41 +296,9 @@ function combine(n: number, k: number): number[][] {
 }
 ```
 
-**[Combination Sum](https://leetcode.com/problems/combination-sum/)**
-
-Like combinations, but a number may be reused any number of times. We still make one take-no-take decision per candidate, with a single twist: the take branch stays on the same index (`bkt(i, ...)`) so the candidate can be chosen again, while the skip branch advances to `i + 1` and never comes back. Because a skipped candidate is gone for good, `[2,3]` and `[3,2]` can't both appear. We carry the remaining target down, save when it hits exactly zero, and abandon the branch once it goes negative or we run out of candidates.
-
-Cost: every candidate is at least 2, so any path can take at most target / 2 = 20 numbers before the remaining target goes negative. The tree depth is at most 20 and with two branches per node: `2 ** 21 - 1 = ~2M` nodes.
-
-```TS
-function combinationSum(candidates: number[], target: number): number[][] {
-    const result: number[][] = [];
-    const path: number[] = [];
-
-    bkt(0, target);
-    return result;
-
-    function bkt(i: number, remaining: number) {
-        if (remaining === 0) {
-            result.push(path.slice());
-            return;
-        }
-        if (remaining < 0 || i === candidates.length) {
-            return;
-        }
-        // take candidates[i], staying at i so it can be reused
-        path.push(candidates[i]);
-        bkt(i, remaining - candidates[i]);
-        path.pop();
-        // skip candidates[i], moving on for good
-        bkt(i + 1, remaining);
-    }
-}
-```
-
 **[Subsets II](https://leetcode.com/problems/subsets-ii/)**
 
-Subsets with duplicates. Rather than the sort-and-skip trick, count how many times each distinct value occurs and then build the subsets one distinct value at a time: at each level we pick a frequency from 0 up to that value's count, push that many copies, and recurse to the next value. Because a value's whole multiplicity is fixed in a single step, no two branches can ever assemble the same multiset, so each distinct subset is recorded exactly once — at the leaf, when every value has been decided. The shape and size of the tree depends on the amount of duplicates. With unique values, it's simply take-no-take 2 ^ n. 2 unique values 5 times each is 6. No matter the input, our tree can't get too large.
+Subsets with duplicates. Rather than the sort-and-skip trick, count how many times each distinct value occurs and then build the subsets one distinct value at a time: at each level we pick a frequency from 0 up to that value's count, push that many copies, and recurse to the next value. Because a value's whole multiplicity is fixed in a single step, no two branches can ever assemble the same multiset, so each distinct subset is recorded exactly once — at the leaf, when every value has been decided. The shape and size of the tree depends on the amount of duplicates. With unique values, it's simply take-no-take 2 ^ n. With 2 unique values 5 times each, the fan-out is 6 per level and there are 6 \* 6 = 36 leaves. No matter the input, our tree can't get too large.
 
 Here is the tree for `nums = [1, 2, 2]` — value `1` appears once, value `2` twice. Each level fixes the copy-count of one distinct value, so the fan-out is `count + 1`, not a fixed two:
 
@@ -436,9 +403,9 @@ Why does this work? Two candidates `arr[j]` with the same letter would put the s
 
 **[Beautiful Arrangement](https://leetcode.com/problems/beautiful-arrangement/)**
 
-This is the swap template with a divisibility filter. `arr` starts as `[1..n]`, and the candidates for slot `i` are the unused suffix `arr[i..n-1]` — but we only swap one in if it is divisible by the position or divides it (positions are 1-indexed, so slot `i` is position `i + 1`). When we run out of slots we have built one valid arrangement, so we bump the counter. We never look at the finished permutation, we only count it, so the scrambled order the swap trick produces costs us nothing. Filtering as we descend keeps the tree far smaller than the full `n!`.
+This is the permutations swap pattern with a divisibility filter. `arr` starts as `[1..n]`, and the candidates for slot `i` are the unused suffix `arr[i..n-1]` — but we only swap one in if it is divisible by the position or divides it (positions are 1-indexed, so slot `i` is position `i + 1`). When we run out of slots we have built one valid arrangement, so we bump the counter. We never look at the finished permutation, we only count it, so the scrambled order the swap trick produces costs us nothing. Filtering as we descend keeps the tree far smaller than the full `n!`.
 
-Cost: the unpruned bound is the permutations tree — under 3 \* n! nodes, about 4 trillion at n = 15. The divisibility filter is what makes this viable: instrumenting the code shows n = 15 visits about 750k nodes, and since each node scans only its unused suffix, that is about 3 million steps, comfortably inside the budget.
+Cost: The permutations tree is O(n!) nodes, about 4 trillion at n = 15. But the divisibility filter is what might make it fast enough. Indeed, with such a small n and no other input to depend on, we can simply run the code locally and see how much time it takes. For n = 15, only ~750k nodes end up being visited.
 
 ```TS
 function countArrangement(n: number): number {
@@ -467,7 +434,7 @@ function countArrangement(n: number): number {
 
 **[Fair Distribution of Cookies](https://leetcode.com/problems/fair-distribution-of-cookies/)**
 
-Here the decision at each node is "which of the `k` children gets this bag?" — a `k`-way branch, one level per bag. We keep a running total per child and, at the leaf, the unfairness is the largest total; we minimise that over all assignments. Two prunes keep it fast: never hand a bag to a child whose total would reach or pass the best answer so far, and stop trying more children once we've tried an empty one, since all empty children are interchangeable.
+Here the decision at each node is "which of the `k` children gets this bag?" — a `k`-way branch, one level per bag. We keep a running total per child and, at the leaf, the unfairness is the largest total; we minimise that over all assignments. There are opportunities to "prune" (exclude some parts of the DFS tree that are not worth exploring) here — never hand a bag to a child whose total would already reach the best answer so far, and stop trying more children once we've tried an empty one, since all empty children are interchangeable — but let's first see how far the plain version gets.
 
 Cost: k choices per bag over n bags is k ^ n leaves — up to 8 ^ 8 ≈ 16 million. And we still have to do `Math.max(...sums)` for all of them. This unoptimized version still passes even though our 25 million rule of thumb says it shouldn't.
 
