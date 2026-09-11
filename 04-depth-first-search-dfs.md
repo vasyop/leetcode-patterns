@@ -45,7 +45,7 @@ DFS starts at the root and explores each child from left to right. For each chil
 
 A -> B -> D -> G -> D -> H -> D -> B -> A -> C -> E -> I -> E -> J. Think about where it goes next. The answer is: -> E -> C -> F -> K -> F -> L -> F -> C -> A. This is the DFS path.
 
-Sometimes people list only the first visit to each node when describing the DFS path. We could implement DFS that way — visiting each node exactly once — giving us: A -> B -> D -> G -> H -> C -> E -> I -> J. However, many problems require us to run some code when we move back up from a child, so it's worth knowing that the full path is available too. The full path isn't much more expensive: each edge is traversed exactly twice, because once DFS goes back up through an edge, it never comes back down through it.
+Sometimes people list only the first visit to each node when describing the DFS path. We could implement DFS that way — visiting each node exactly once — giving us: A -> B -> D -> G -> H -> C -> E -> I -> J -> F -> K -> L. However, many problems require us to run some code when we move back up from a child, so it's worth knowing that the full path is available too. The full path isn't much more expensive: each edge is traversed exactly twice, because once DFS goes back up through an edge, it never comes back down the second time.
 
 Let's think about how to implement DFS from scratch. The key question is: when we're at some node, where do we go next? The first time we leave a node, we visit its first child, then its second, and so on. After all children are done, we return to the parent — or, if there is no parent (we're at the root), the algorithm ends. So at any point in the traversal, we need to know, for each ancestor node, which child to visit next once we return to it.
 

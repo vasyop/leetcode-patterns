@@ -405,7 +405,7 @@ Why does this work? Two candidates `arr[j]` with the same letter would put the s
 
 This is the permutations swap pattern with a divisibility filter. `arr` starts as `[1..n]`, and the candidates for slot `i` are the unused suffix `arr[i..n-1]` — but we only swap one in if it is divisible by the position or divides it (positions are 1-indexed, so slot `i` is position `i + 1`). When we run out of slots we have built one valid arrangement, so we bump the counter. We never look at the finished permutation, we only count it, so the scrambled order the swap trick produces costs us nothing. Filtering as we descend keeps the tree far smaller than the full `n!`.
 
-Cost: The permutations tree is O(n!) nodes, about 4 trillion at n = 15. But the divisibility filter is what might make it fast enough. Indeed, with such a small n and no other input to depend on, we can simply run the code locally and see how much time it takes. For n = 15, only ~750k nodes end up being visited.
+Cost: The permutations tree is O(n!) nodes, about 1.3 trillion at n = 15. But the divisibility filter is what might make it fast enough. Indeed, with such a small n and no other input to depend on, we can simply run the code locally and see how much time it takes. For n = 15, only ~750k nodes end up being visited.
 
 ```TS
 function countArrangement(n: number): number {
