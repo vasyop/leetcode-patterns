@@ -9,12 +9,11 @@ This is a work in progress — chapters are added as they are written.
 
 ## Chapters
 
-1. [Disclaimer](01-disclaimer.md)
-2. [Introduction](02-introduction.md)
-3. [Constraints and time complexity](03-constraints-and-time-complexity.md)
-4. [Depth-First Search (DFS)](04-depth-first-search-dfs.md)
-5. [Backtracking](05-backtracking.md)
-6. [Top-down DP / DFS + memo](06-top-down-DP.md)
+1. [Introduction](01-introduction.md)
+2. [Constraints and time complexity](02-constraints-and-time-complexity.md)
+3. [Depth-First Search (DFS)](03-depth-first-search-dfs.md)
+4. [Backtracking](04-backtracking.md)
+5. [Top-down DP / DFS + memo](05-top-down-DP.md)
 
 ## Feedback and new chapters
 

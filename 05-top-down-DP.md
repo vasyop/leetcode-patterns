@@ -2,11 +2,14 @@
 
 # Top-down DP
 
+- ~26% of the medium and hard problems I tracked involve top-down DP, and roughly a third of those
+  need nothing else. It is the single most common pattern in the book.
+
 ## Prerequisites
 
 - DFS chapter
 - Bitwise operations
-- GCD/LCM basics, eucledian algorithm
+- GCD/LCM basics, Euclidean algorithm
 
 ## What Top-down DP is all about
 
@@ -166,7 +169,7 @@ DP works on directed acyclic graphs (DAGs), but often it's not very obvious how 
 
 Some of the more obvious DP problems to spot are the ones where somebody has already drawn the graph for us. Let's look at [Frog Jump](https://leetcode.com/problems/frog-jump/). A frog crosses a river on stones sitting at the sorted positions in `stones`. It starts on the first stone, its first jump must be exactly 1 unit, and from then on, if the jump it just made was `k` units, the next one must be `k - 1`, `k` or `k + 1` units. Jumps always go forward. Can the frog land on the last stone?
 
-If we consider stones as nodes, there is an issue. Take `stones = [0, 1, 2, 3, 4, 7]` and look at the two ways of arriving at the stone at position 4:
+If we consider stones as nodes, there is an issue. Take `stones = [0, 1, 2, 3, 4, 7]` and look at the two ways of arriving at the stone at position 4. The arrows below are labelled with *positions*, which is how the statement talks about the river:
 
 ```
    0 --jump 1--> 1 --jump 1--> 2 --jump 2--> 4 --jump 3--> 7
@@ -174,7 +177,9 @@ If we consider stones as nodes, there is an issue. Take `stones = [0, 1, 2, 3, 4
    0 --jump 1--> 1 --jump 2--> 3 --jump 1--> 4  (next jump is 1 or 2, and 5 and 6 are both water — the frog is stuck)
 ```
 
-In both cases, we are at stone 4, but it also matters how much we can jump. The correct approach is therefore to define each node on our DP graph as the pair `(stoneIndex, lastJump)`. `(4, 2)` and `(4, 1)` are now different states, and only one leads to success. Here is the complete DP graph for this array (only valid jumps are drawn).
+In both cases, we are at stone 4, but it also matters how much we can jump. The correct approach is therefore to define each node on our DP graph as the pair `(stoneIndex, lastJump)`. `(4, 2)` and `(4, 1)` are now different states, and only one leads to success.
+
+From here on the first number in a pair is the stone's **index**, not its position — that is what the code indexes the memo with. For this particular array the two happen to agree everywhere except the last stone, which sits at index 5 and position 7, so watch for `(5, 3)` below. Here is the complete DP graph for this array (only valid jumps are drawn).
 
 ```
                 jump 1               jump 2               jump 3
@@ -188,7 +193,7 @@ In both cases, we are at stone 4, but it also matters how much we can jump. The 
          '-----> (4, 1) <-----'
 ```
 
-`(5, 3)` is the far bank. `(4, 1)` is the dead end — from position 4 with a last jump of 1 the frog can only reach 5 or 6, and both are water — while `(4, 2)` clears the gap in a single jump of 3. And look at `(4, 1)` once more: both `(3, 1)` and `(3, 2)` lead into it, so it is a node with two parents, which makes this a graph and not a tree.
+`(5, 3)` is the far bank — the last stone, reached with a final jump of 3. `(4, 1)` is the dead end — standing on the stone at index 4 with a last jump of 1, the frog can only reach positions 5 or 6, and both are water — while `(4, 2)` clears the gap in a single jump of 3. And look at `(4, 1)` once more: both `(3, 1)` and `(3, 2)` lead into it, so it is a node with two parents, which makes this a graph and not a tree.
 
 In such problems, I like to think of each DP state as a _place_. From any place, we can go to at most 3 other places. If the frog is at some place _p_, can it land on the last stone starting from this place _p_? If yes, it does not matter how the frog arrived at _p_, the answer is always yes. If not, the same holds, it does not matter, the answer is always no.
 
@@ -367,7 +372,7 @@ Every combination now has to ask "is the thing I am about to add to even a real 
 
 ## Two-sequence alignment
 
-Let's consider [Longest Common Subsequence](https://leetcode.com/problems/longest-common-subsequence/). Problems with sequences and subsequences are DP favorites and unfortunately, this is something you need to remember, because at first glance, the problem statement does not suggest a DP graph at all. But conider the following decision tree: the state is `(i, j)` where `i` is a pointer inside `text1` and `j` is a pointer inside `text2`. To build any subsequence including the longest one, at each node, have the following choices:
+Let's consider [Longest Common Subsequence](https://leetcode.com/problems/longest-common-subsequence/). Problems with sequences and subsequences are DP favorites and unfortunately, this is something you need to remember, because at first glance, the problem statement does not suggest a DP graph at all. But consider the following decision tree: the state is `(i, j)` where `i` is a pointer inside `text1` and `j` is a pointer inside `text2`. To build any subsequence including the longest one, at each node we have the following choices:
 
 1. increment both `i` and `j` if `text1[i] === text2[j]` and take the character
 2. only advance `i` to `i + 1`
@@ -530,7 +535,7 @@ Notice that to decide the best order for the last two spots, we don't need to kn
 For a giant decision tree with 14 choices, there is a lot of identical subtrees. So we must use DP and turn it into a much smaller graph.
 The question we are asking is what is the best way to arrange k elements on the last k spots? We can try either one of those k, and then the question becomes what is the best way to arrange k - 1 elements (without the one we just chose) on the last k - 1 spots?
 
-So we model our state as `taken` (which elements were already taken), an integer that can get as high as `2 ** 14`, where every bit being on/off means that element was already taken or not. For each branch in our decision tree, we try every possible element that was not already taken. This is basically DFS where instead of passing down a stack of indicies of elements already taken, we encapsulate that information into the integer taken - our `bitmask`. Then, we notice the repeating subtrees, turn the tree into a graph and store the the result so we don't have to re-compute it
+So we model our state as `taken` (which elements were already taken), an integer that can get as high as `2 ** 14`, where every bit being on/off means that element was already taken or not. For each branch in our decision tree, we try every possible element that was not already taken. This is basically DFS where instead of passing down a stack of indices of elements already taken, we encapsulate that information into the integer taken - our `bitmask`. Then, we notice the repeating subtrees, turn the tree into a graph and store the result so we don't have to re-compute it
 
 Here is the entire code:
 
@@ -579,13 +584,17 @@ The recurring pattern for top-down DP is:
 3. Notice that the same subtrees appear in it over and over.
 4. Glue those copies into a single node, and the tree should become a graph small enough to walk.
 
-That is the whole ideea — the memo is only the bookkeeping that makes each node run its body once.
+That is the whole idea — the memo is only the bookkeeping that makes each node run its body once.
 
 Everything hard about a DP problem is in the state, the label we put on a node. It has to carry everything the rest of the walk depends on, and nothing else. Carry too little and the label stops identifying a subproblem: the frog standing on stone 4 has a different future depending on the jump that landed it there, so the state is `(stone, lastJump)` and not `stone`. Carry too much and the state count multiplies for no reason: `depth` in the bitmask solution is always the number of set bits in `taken`, so it rides along as a parameter but stays out of the memo. Once the state is right, the transitions are usually just a transcription of the rules — take or skip, buy or sell, which pointer to advance.
 
 The cost is always based on the same formula: **cost = number of states × work per state**.
 
-Two conventions showed up in nearly every solution. `-1` marks "not computed yet", and it is only safe because no real answer can be `-1` — pick a sentinel a real answer can take and you get a bug that looks correct and quietly returns wrong numbers. And a hugely negative number like `-1e11` marks "this state has no valid ending", so that `Math.max` can never prefer it.
+Two kinds of sentinel show up in nearly every solution, and both are worth stating carefully, because the exact value is chosen per problem rather than fixed once for the book.
+
+The first marks "not computed yet" in the memo. Most of the time that is `-1`, and it is safe only because no real answer to that particular problem can be `-1` — the answers are counts, or lengths, or sums of non-negative numbers. This is the one place where copying a convention blindly will hurt you: pick a sentinel that a real answer can also take and you get a bug that looks correct and quietly returns wrong numbers on some inputs. So when negative answers are possible, `-1` is off the table and you will see `null` instead (Max Dot Product of Two Subsequences is the clearest case, where `-1` is a perfectly legal dot product), and occasionally a value chosen to sit far outside the answer range, the way Shortest Common Supersequence uses `-1e11`. A separate boolean array works too. Read the first lines of each solution below with this in mind rather than assuming `-1`.
+
+The second marks "this state has no valid ending", so that a surrounding `Math.max` can never prefer it — a hugely negative number for a maximisation, and a hugely large one for a minimisation. Here the magnitude is what matters, not the digits: it has to be far enough past any reachable answer that adding a few thousand to it along the way back up still leaves it losing every comparison. That is why you will see `-1e11`, `1e11`, `1e13`, `1e15` and `Infinity` in different problems below. Each was picked to clear that problem's answer range, and `Infinity` is simply the version that needs no thought at all, at the price of `NaN` if you ever subtract one from another.
 
 ## Flat arrays
 
@@ -614,9 +623,9 @@ The difference is not subtle. Filling and reading back every entry of a 300 by 3
 
 ## Closing notes on top-down DP
 
-DP will get harder and then much harder in later chapters, but what was covered here is foundational. leetcode likes top down DP very much - over 100/2000 mediums/hards solved by me involving nothing but top down DP and over 250/2000 involving top down DP along with other patterns discussed later in the book.
+DP will get harder and then much harder in later chapters, but what was covered here is foundational. LeetCode likes top-down DP very much. Of the 1,326 medium and hard problems in my log, 350 involve it — about 100 of them need nothing but top-down DP, and the remaining 250 combine it with patterns discussed later in the book.
 
-Even though all DP problems in this chapter follow these patterns, there are still some common pitfalls to fall into - too many to mention without concrete examples. This is way I can't recommend enough attempting to solve the practice problems on your own. Almost each one will teach you some small detail. Make sure you check the solution before moving to the next.
+Even though all DP problems in this chapter follow these patterns, there are still some common pitfalls to fall into - too many to mention without concrete examples. This is why I can't recommend enough attempting to solve the practice problems on your own. Almost each one will teach you some small detail. Make sure you check the solution before moving to the next.
 
 ## Top-down DP practice problems
 
@@ -951,11 +960,11 @@ function maxSum(nums: number[], k: number, m: number): number {
 **[Can I Win](https://leetcode.com/problems/can-i-win/)**
 
 Because both players play optimally, we don't need to store in the state whose turn it is - the state is the same for either of them.
-Any player can win from a given state if there is a move available that results in a state that is unwinnnable. So we need to decide which are the winnable states. `maxChoosableInteger <= 20` so we can encode which numbers are still avaialable to be taken in a bitmask.
+Any player can win from a given state if there is a move available that results in a state that is unwinnable. So we need to decide which are the winnable states. `maxChoosableInteger <= 20` so we can encode which numbers are still available to be taken in a bitmask.
 
-The remaining terget sum `rem` doesn't need to be part of the state because it's determined by which numbers were taken so far, regardless of who took them.
+The remaining target sum `rem` doesn't need to be part of the state because it's determined by which numbers were taken so far, regardless of who took them.
 
-The problem statement is a bit vague about what happens if the sum of all integers is less than `desiredTotal`. Test cases suggest that the first player can't force a win in this case, regardless if it would be his turn or not when there are no more integers to choose from. To get rid of this edge case, we check it in the beginning.
+The problem statement is a bit vague about what happens if the sum of all integers is less than `desiredTotal`. Test cases suggest that the first player can't force a win in this case, regardless of whose turn it would be when there are no more integers to choose from. To get rid of this edge case, we check it in the beginning.
 
 Cost: `2 ** 20` states with 20 transitions each in the worst case, at most 20 million transitions.
 
@@ -1174,7 +1183,7 @@ function findMaxForm(strs: string[], m: number, n: number): number {
 
 **[Minimum Swaps To Make Sequences Increasing](https://leetcode.com/problems/minimum-swaps-to-make-sequences-increasing/)**
 
-If the current state is at some index i, we can assume that all previous indicies already have increasing values. We only need to look back and `nums1[i - 1]` and `nums2[i - 1]` which may or may not have been swapped, and this previous boolean decision is what the state needs. The transitions are simply swap or no-swap.
+If the current state is at some index i, we can assume that all previous indices already have increasing values. We only need to look back and `nums1[i - 1]` and `nums2[i - 1]` which may or may not have been swapped, and this previous boolean decision is what the state needs. The transitions are simply swap or no-swap.
 
 Cost: `n * 2` states with 2 transitions each.
 
@@ -1394,7 +1403,7 @@ function maximumAmount(coins: number[][]): number {
 
 **[Maximum Profit From Valid Topological Order in DAG](https://leetcode.com/problems/maximum-profit-from-valid-topological-order-in-dag/)**
 
-With `n = 22`, bitwise DP should quickly come to mind. Here, we need to find an optimal permutation, so our state becomes the set of nodes that were already taken and we want to find the best (with highest score) way to arrage the remaining nodes.
+With `n = 22`, bitwise DP should quickly come to mind. Here, we need to find an optimal permutation, so our state becomes the set of nodes that were already taken and we want to find the best (with highest score) way to arrange the remaining nodes.
 
 Cost: `2 ** n` states with `n` transitions each — 4 million \* 22, about 92 million, down from 22! orderings. That's almost 4 times slower than our 25 million guideline, and indeed it passes in 1.4s, not exactly the fastest, but that's ok.
 
@@ -1548,7 +1557,7 @@ So we let the recursion do the repeating. From `(i, rem)` the question is which 
     skip = rec(i + 1, rem)
 ```
 
-I would be ashamed to admit that I also screwed this problem up the second time I solved it a few months later, so I won't.
+For what it is worth, I made the same mistake again a few months later, on my second attempt at this problem. The pull towards "how many of this coin?" is strong, because that is how the statement is phrased. The fix is to remember that the question a state answers has to be about the rest of the input, not about one item.
 
 Cost: `n * (amount + 1)` states with 2 transitions each — `12 * 10001`, about 120 thousand steps, down from roughly 105 million for the version above.
 
@@ -1642,7 +1651,7 @@ function maxProductPath(grid: number[][]): number {
 
 One number is picked from every row, and the whole selection is judged by a single quantity: the gcd of everything picked so far. That is the state — `(row, gcd so far)` — and it stays small because a gcd of numbers up to 150 is itself at most 150.
 
-Cost: `m * 151` states with one transition per entry in the row, so `150 ^ 3 = 3.3 million` overall. There is also the cost of calling `gcd`, but with numbers so small, it's quite neglijable. `log2(150) = 7`. Also, because there are only 150 possible values in our grid and gcd only gets smaller, we can even precompute all possible gcd(x <= 150, y <= 150) values, but the code below is already very fast.
+Cost: `m * 151` states with one transition per entry in the row, so `150 ^ 3 = 3.3 million` overall. There is also the cost of calling `gcd`, but with numbers this small it is negligible — the Euclidean algorithm needs on the order of `log2(150) ≈ 7` iterations. Also, because there are only 150 possible values in our grid and gcd only gets smaller, we can even precompute all possible gcd(x <= 150, y <= 150) values, but the code below is already very fast.
 
 ```TS
 function countCoprime(mat: number[][]): number {
@@ -1685,7 +1694,7 @@ function countCoprime(mat: number[][]): number {
 
 **[Minimum Number of Work Sessions to Finish the Tasks](https://leetcode.com/problems/minimum-number-of-work-sessions-to-finish-the-tasks/)**
 
-We need to order tasks such that they fit into as few fixed-time sessions as possible. My first thought was a state such as `(taken, sessionsCompleted, timeLeftInCurrentSession)` and simply dfs + memo in this graph tryting to reach states where `taken` is just ones and sessionsCompleted is as low as possible. We don't even have to return anything but, the issue is that it's quite slow. `2 ** 14 * 16 * 10 = 2.6M` states, each with a for loop inside, that's just above our 25 million cutoff point. We are in luck however, because this still barely passes taking around 2.5 seconds.
+We need to order tasks such that they fit into as few fixed-time sessions as possible. My first thought was a state such as `(taken, sessionsCompleted, timeLeftInCurrentSession)` and simply dfs + memo in this graph trying to reach states where `taken` is just ones and sessionsCompleted is as low as possible. We don't even have to return anything, but the issue is that it's quite slow. The table is `2 ** 14` masks by `n + 1 = 15` session counts by `sessionTime + 1 = 16` remaining minutes, so `2 ** 14 * 15 * 16 = 3.9M` states, each with a 14-iteration for loop inside — around 55 million steps, well past our 25 million cutoff point. We are in luck however, because this still barely passes taking around 2.5 seconds.
 
 ```TS
 function minSessions(tasks: number[], sessionTime: number): number {
@@ -1902,7 +1911,7 @@ This might not look like a DP problem, but let's think about what swapping a sub
 
 For any optimal solution that is not simply nums1 or nums2, we will either start from nums1 or nums2, take some number of contiguous elements, then move to the other array and again take same number of contiguous elements (the swapped part) and then back to the original array, and take elements until its end. Alternatively, if the swapped array is a suffix or prefix, we only have to "move" once to the other array.
 
-So our state is essentially which array we we looking at, at what index, and how many "moves" do we have left - we can do 0, 1 or 2 moves.
+So our state is essentially which array we are looking at, at what index, and how many "moves" do we have left - we can do 0, 1 or 2 moves.
 
 Cost: `n * 2 * 3` states with 2 transitions each.
 
@@ -2061,7 +2070,7 @@ function shortestCommonSupersequence(s1: string, s2: string): string {
 
 **[Stickers to Spell Word](https://leetcode.com/problems/stickers-to-spell-word/)**
 
-Our state can simply  be which letter indicies were already covered on our target so that restricts the number of nodes to 2 ^ 15. We still have enough steps to spend inside the function body to try each possible word and see if it reduces our state. If it doesn't, there's no point in taking that sticker. We can precompute the counts of each letter in each sticker before the recursion. Then, inside the recursive function, to check how each sticker changes our state, we check each letter in our target from left to right. The overall cost is 2 ^ 15 \* 50 \* 15 ≈ 25 million.
+Our state can simply  be which letter indices were already covered on our target so that restricts the number of nodes to 2 ^ 15. We still have enough steps to spend inside the function body to try each possible word and see if it reduces our state. If it doesn't, there's no point in taking that sticker. We can precompute the counts of each letter in each sticker before the recursion. Then, inside the recursive function, to check how each sticker changes our state, we check each letter in our target from left to right. The overall cost is 2 ^ 15 \* 50 \* 15 ≈ 25 million.
 
 ```TS
 function minStickers(stickers: string[], target: string): number {
@@ -2197,11 +2206,11 @@ function minimumIncrements(nums: number[], target: number[]): number {
 
 **[Minimum Total Distance Traveled](https://leetcode.com/problems/minimum-total-distance-traveled/)**
 
-One ideea is to assign robots to factories one at a time from left to right, and that brings the robot index `ri` into our state. For the rest of the state, we somehow need to compress the state of the factories as much as possible. We could add to the state the factory index `fi` and how many repairs were already performed at that factory as `used`. `fi = 3` and `used = 2` would mean that the factory at index 3 has `factory[3] - 2` repairs left and all the next factories have no used repairs. Potential cost: `robots * factories * (robots + 1)` states with 2 transitions each — 100 \* 100 \* 101, about a million.
+One idea is to assign robots to factories one at a time from left to right, and that brings the robot index `ri` into our state. For the rest of the state, we somehow need to compress the state of the factories as much as possible. We could add to the state the factory index `fi` and how many repairs were already performed at that factory as `used`. `fi = 3` and `used = 2` would mean that the factory at index 3 has `factory[3] - 2` repairs left and all the next factories have no used repairs. Potential cost: `robots * factories * (robots + 1)` states with 2 transitions each — 100 \* 100 \* 101, about a million.
 
-But that would mean that we can never express a state such as "3 factories, first and third are fully unused, and second is fully used", which can of course, happen. We need to explore the following question: Consider two robots `r1` and `r2`, is it ever a good ideea for `r1` to go to some factory `f1` <= `r1` and `r2` to go to some factory `f0` <= `f1`? Suppose we have this "crossed" situation. The cost is `(r1 - f1) + (r2 - f0)`. If we make `r1` go to `f0` and `r2` go to `f1`, the cost is `(r1 - f0) + (r2 - f1)`, which is exactly the same. We can think about all possible ways to arrange `r1`, `r2`, `f0`, `f1` and we will find that in all cases, uncrossing the robot-factory pairs is just as good as crossing, if not better.
+But that would mean that we can never express a state such as "3 factories, first and third are fully unused, and second is fully used", which can of course, happen. We need to explore the following question: Consider two robots `r1` and `r2`, is it ever a good idea for `r1` to go to some factory `f1` <= `r1` and `r2` to go to some factory `f0` <= `f1`? Suppose we have this "crossed" situation. The cost is `(r1 - f1) + (r2 - f0)`. If we make `r1` go to `f0` and `r2` go to `f1`, the cost is `(r1 - f0) + (r2 - f1)`, which is exactly the same. We can think about all possible ways to arrange `r1`, `r2`, `f0`, `f1` and we will find that in all cases, uncrossing the robot-factory pairs is just as good as crossing, if not better.
 
-This means that if an solution exists such there is some robot-factory crossing, it can always be converted to a solution where there isn't any crossing and the cost is lower or equal. (this might seem intuitive, but it's always a good ideea to write a small proof like this to make sure). So indeed the `(ri, fi, used)` state ideea is correct.
+This means that if an solution exists such there is some robot-factory crossing, it can always be converted to a solution where there isn't any crossing and the cost is lower or equal. (this might seem intuitive, but it's always a good idea to write a small proof like this to make sure). So indeed the `(ri, fi, used)` state idea is correct.
 
 ```TS
 function minimumTotalDistance(robot: number[], factory: number[][]): number {
@@ -2281,21 +2290,21 @@ function isMatch(s: string, p: string): boolean {
 
 Unlike similar problems, `i` can reach the end without `j` reaching the end, but we can still have a match for something like (`a`, `ab*`), so we need `n + 1` for our first DP table dimension.
 
-We must check two stepts ahead in our pattern, not only `p[j]`, but also for a `*` after it. If there is no `*` at `p[j + 1]`, we try to match 1 character, but if there is, we can choose to either drop the repeating character and move j to j + 2, or to match one more occurance of the repeating character and move i to i + 1.
+We must check two steps ahead in our pattern, not only `p[j]`, but also for a `*` after it. If there is no `*` at `p[j + 1]`, we try to match 1 character, but if there is, we can choose to either drop the repeating character and move j to j + 2, or to match one more occurrence of the repeating character and move i to i + 1.
 
 ```TS
 res = match(i, j + 2) || (matchHere && match(i + 1, j)) ? 1 : 0;
 ```
 
-Here, also need to explicitly check `i < n`:
+Here we also need to explicitly check `i < n`:
 
 ```TS
 const matchHere = p[j] === '.' && i < n || p[j] === s[i];
 ```
 
-This is because there can be are valid states with `i === n`, but if `p[j] === '.' && i === n`, we will reach an invalid state with the `match(i + 1, j + 1)` that follows.
+This is because there can be valid states with `i === n`, but if `p[j] === '.' && i === n`, we will reach an invalid state with the `match(i + 1, j + 1)` that follows.
 
-Finally, we might be tempted to try to match 0 or more chracters with a for loop once we encounter a character followed by a `*`.
+Finally, we might be tempted to try to match 0 or more characters with a for loop once we encounter a character followed by a `*`.
 
 ```TS
     if (p[j + 1] === '*') {
@@ -2366,9 +2375,9 @@ function minOperations(s1: string, s2: string, x: number): number {
 
 **[Maximum Points After Collecting Coins From All Nodes](https://leetcode.com/problems/maximum-points-after-collecting-coins-from-all-nodes/)**
 
-At node `node`, it doens't matter **which** ancestors have been halved, the only relevant piece of information for `node` and its entire subtree, is **how many** ancestors have been halved. That's enough to compute the coins gained for each node in the `node` subtree. So our state is `(i, halved)`. And we can either halve or not halve the current node.
+At node `node`, it doesn't matter **which** ancestors have been halved, the only relevant piece of information for `node` and its entire subtree, is **how many** ancestors have been halved. That's enough to compute the coins gained for each node in the `node` subtree. So our state is `(i, halved)`. And we can either halve or not halve the current node.
 
-We also need to realize that `coins[i] <= 1e4`, so no amount of coins at any given node an survive more than 14 halvings. If more than 14 halvings occured above, we can say exactly 14 have occured, since the value for every node below is 0 anyay. So the total amount of states in our DP graph cannot exceed `n * 15` (0 to 14 halvings for each node).
+We also need to realize that `coins[i] <= 1e4`, so no amount of coins at any given node can survive more than 14 halvings. If more than 14 halvings occurred above, we can say exactly 14 have occurred, since the value for every node below is 0 anyway. So the total amount of states in our DP graph cannot exceed `n * 15` (0 to 14 halvings for each node).
 
 For each state in the DP graph, there are at most 2 transitions **towards** that state, one from the parent node state with halving, and one from the parent node without halving. So the total number of edges in our DP graph cannot exceed `(n - 1) * 15`.
 
@@ -2561,9 +2570,9 @@ function maximumANDSum(nums: number[], numSlots: number): number {
 >
 > Constraints: `1 <= blocks.length <= 1000`, `1 <= blocks[i] <= 10⁵`, `1 <= split <= 100`.
 
-The first observation is that there is no reason so ever start a faster block before a slower block, so we need to sort `blocks` descending, as workers will start working on them from left to right.
+The first observation is that there is no reason to ever start a faster block before a slower block, so we need to sort `blocks` descending, as workers will start working on them from left to right.
 
-Then, at any point in time, if there are `w` available workers, we can either choose to assign one or more of them to the blocks that follow, or split them and wait `split`. Of course, to avoid an unencessary for loop to **assign one or more of them**, we can simply assign the first one and transition to the same point in time, so instead of one or more transistions, there is just one - so we can avoid unnencessary edges, as explained in [Coin Change](https://leetcode.com/problems/coin-change/).
+Then, at any point in time, if there are `w` available workers, we can either choose to assign one or more of them to the blocks that follow, or split them and wait `split`. Of course, to avoid an unnecessary for loop to **assign one or more of them**, we can simply assign the first one and transition to the same point in time, so instead of one or more transitions, there is just one - so we can avoid unnecessary edges, as explained in [Coin Change](https://leetcode.com/problems/coin-change/).
 
 Cost: `n * n` states with 2 transitions each.
 
@@ -2607,7 +2616,7 @@ By now your intuition should point to a state such as `(index, sum1, sum2)`. `su
 
 There is one important observation we need to make to reduce the number of states: we can use just `sum1` and `index` to identify a state because `sum2` is always the same as long as `sum1` and `index` don't change: `total sum up until index` - `sum1`. So the actual number of states is `n * maxPossibleSum`. And we can even pass `sum2` as an argument to the recursive function, but the state key does not depend on it. So our state is simply `(index, sum1)`, but we still have the problem that `maxPossibleSum` can get much higher than `k`.
 
-Next point to realize (bear with me) is if both `sum1` and `sum2` are >= `k`, we have reached a point in our DP DAG where all following `nums` can go either to `sum1` or `sum2`. So if both `sum1` and `sum2` are >= `k`, for a fixed `index`, no matter what the current state `(index, sum1)` returns, all `(index, sum1)` states will return the same value, because the `>=k` condition has already been satisfied for both sums. So for some fixed `index`, if `sum1` and `sum2` are >= `k`, all `(index, sum1)` states are equivalent. So we can identify our state as `(index, Math.min(sum1, sum2, k))`. The only thing that makes a state unique is the lower of the two sums (because the higher sum is determing by the lower one), and only if it's lower than k.
+Next point to realize (bear with me) is if both `sum1` and `sum2` are >= `k`, we have reached a point in our DP DAG where all following `nums` can go either to `sum1` or `sum2`. So if both `sum1` and `sum2` are >= `k`, for a fixed `index`, no matter what the current state `(index, sum1)` returns, all `(index, sum1)` states will return the same value, because the `>=k` condition has already been satisfied for both sums. So for some fixed `index`, if `sum1` and `sum2` are >= `k`, all `(index, sum1)` states are equivalent. So we can identify our state as `(index, Math.min(sum1, sum2, k))`. The only thing that makes a state unique is the lower of the two sums (because the higher sum is determined by the lower one), and only if it's lower than k.
 
 If this is starting to get frustrating, I have good news: this is leetcode ~2400 rating. Just around 0.5% of contestants can tackle this problem, even though we don't need to juggle a lot of concepts (just top-down DP is enough) to solve it.
 

@@ -2,13 +2,16 @@
 
 # Backtracking
 
+- ~8% of the medium and hard problems I tracked. In my notes backtracking shares a tag with plain
+  recursive DFS, so read that as an upper bound — which is also why this is a short chapter.
+
 ## Prerequisites
 
 - DFS chapter
 
 ## What Backtracking is all about
 
-In the previous chapter, we saw how DFS can be used to explore decision trees. Sometimes however, the decision tree has to be build while exploring it. Consider the the problem of finding all the permutations of the list of numbers from 1 to 3. There are 6 permutations in total: 123, 132, 213, 231, 312, 321. Notice that the number of possible choices shrinks as we descend down into the tree, because we are not allowed to pick the same number twice. If we choose 1 as first element, we can choose 2 or 3 as second. If we choose 2 as the second, we can only choose 3 as the third.
+In the previous chapter, we saw how DFS can be used to explore decision trees. Sometimes however, the decision tree has to be built while exploring it. Consider the problem of finding all the permutations of the list of numbers from 1 to 3. There are 6 permutations in total: 123, 132, 213, 231, 312, 321. Notice that the number of possible choices shrinks as we descend down into the tree, because we are not allowed to pick the same number twice. If we choose 1 as first element, we can choose 2 or 3 as second. If we choose 2 as the second, we can only choose 3 as the third.
 
 ```
            empty
@@ -48,13 +51,33 @@ function permutations(n: number): number[][] {
 }
 ```
 
-We try all possible numbers at each depth. As we descend, push on the stack the chosen item, but when we choose an item, we must check the stack - it should not contain that item. let's see how many nodes our tree has. The last level has n! nodes, the second to last also has n!, then n! / 2!, then n! / 3! and so on until the root which is n! / n!. If you solve this sum with math, it's less than 3 \* n!.
+We try all possible numbers at each depth. As we descend, push on the stack the chosen item, but when we choose an item, we must check the stack - it should not contain that item. Let's see how many nodes our tree has. The last level has n! nodes, the second to last also has n!, then n! / 2!, then n! / 3! and so on until the root which is n! / n!. If you solve this sum with math, it's less than 3 \* n!.
 
-For each node, we do a for loop with n iterations, and each iteration has a `stack.includes(choice)` inside. So for each node, we do an additional O(n ^ 2) steps. But there is a smart way to optimize this: The swap trick. Array starts [1..n]. When `bkt(i)` runs, arr[0..i-1] is permutation prefix already chosen, arr[i..n-1] holds exactly the not-yet-used numbers. Membership check now free — anything in suffix is unused by construction.
+For each node, we run a for loop with `n` iterations, and every iteration calls `stack.includes(choice)`, which scans the stack and costs up to `O(n)` by itself. So each node spends `O(n ^ 2)` steps, almost all of it re-answering the same question: which numbers are still free? There is a way to make that question free of charge, and it is worth learning properly — **the swap trick**.
 
-At depth i, loop over j = i..n-1: each arr[j] is a candidate for slot i. Swap brings it into slot i; suffix arr[i+1..] becomes new unused pool for recursion. After recursion returns, swap back — array is now bit-for-bit identical to before, so next j iteration sees clean state. Same "write before descend, undo after come up" shape as before, except undo is swap instead of pop. The key insight is that the stack only grows in one direction. So calling `bkt(...)` recursively will never disturb the state of parent `bkt(...)` stack frames. `arr` will be in the exact same shape before and after the `bkt(...)` call.
+The idea is to stop keeping a separate list of chosen numbers. Instead we keep one array holding all `n` numbers at once, and we mentally split it in two at the current depth `i`:
 
-Swap version cost: O(1) per child — two swaps, O(n!) total cost; `result.push(arr.slice())` makes it O(n \* n!). But there is a tradeoff: output order is no longer lexicographic — swaps scramble suffix order, e.g. for n=3 you get 123, 132, 213, 231, 321, 312 (last two flipped). Naive loop 1..n gives sorted order.
+```
+        arr = [ 2 , 3 | 1 , 4 ]      i = 2
+                chosen   still free
+```
+
+Everything to the left of the bar, `arr[0..i-1]`, is the prefix we have committed to. Everything to the right, `arr[i..n-1]`, is exactly the set of numbers we have not used yet. That is the promise we are going to keep at every node, and it is what makes the membership check disappear: a number is free precisely when it sits in the right-hand region, so there is never anything to search for.
+
+So how do we keep the promise? At depth `i` we choose which number goes into slot `i`, and the candidates are exactly the entries of the free region — hence the loop `j = i .. n - 1`. To commit to `arr[j]`, we swap it into slot `i`:
+
+```
+   before:  [ 2 , 3 | 1 , 4 ]    i = 2, j = 3   (choose 4 for slot 2)
+   after:   [ 2 , 3 , 4 | 1 ]    i = 3
+```
+
+The chosen number lands in slot `i`, and the number that used to sit there (the `1`) gets pushed out into the free region. Nothing was created and nothing was lost — the bar just moved one step to the right, and `arr[i+1..n-1]` once again holds exactly the unused numbers. The promise now holds for the child, so `bkt(i + 1)` can rely on it in turn.
+
+When the child returns, we swap the very same two entries back. That is the undo half of backtracking, and here it is exact: swapping one pair twice restores the array to precisely the arrangement it had on entry. So the next value of `j` starts from a clean state, and the parent frame finds its own array untouched. That is what makes the recursion safe — `bkt(i + 1)` only ever rearranges entries from index `i + 1` onwards, and it always puts them back, so no child can disturb the prefix its parent is standing on.
+
+The shape is the same "write before descend, undo after come up" discipline we used with push and pop. The only difference is that the write is a swap and the undo is that same swap again.
+
+The cost per node drops from `O(n ^ 2)` to `O(1)` — two swaps and nothing else — so walking the whole tree is `O(n!)`. The only `O(n)` work left is `result.push(arr.slice())` at each leaf, which brings the total to `O(n \* n!)`. There is one trade-off: the output is no longer in lexicographic order, because swapping scrambles the order of the free region. For `n = 3` we get 123, 132, 213, 231, 321, 312 — the last two are flipped compared to the naive loop over `1..n`, which does come out sorted.
 
 ```TS
 function permutations(n: number): number[][] {
@@ -93,9 +116,9 @@ Here is the whole decision tree for n = 3. Each node shows `arr` as seen by that
 
 Reading the leaves left to right gives exactly the order from above: 123, 132, 213, 231, 321, 312.
 
-One thing to keep in mind: To go from 2|13 to 3|21, we first go undo to 1|23. This makes sure that after each for loop iteration `arr` is in the exact same state as initialilly received on that stack frame.
+One thing to keep in mind: To go from 2|13 to 3|21, we first undo back to 1|23. This makes sure that after each for loop iteration `arr` is in the exact same state as initially received on that stack frame.
 
-I've written this swap trick by hand a lot of times, but it still feels smart and powerful. It's also very common - I often want to quickly write a brute force solution so you can validate your optimized solution. If the brute force solution involves trying all possible ways of arranging some items such that some condition is satisfied, I will use this to generate all permutations and validate the permutation before `result.push(arr.slice());`. I hope you've wrapped your head around this (let me know if you don't), because reccursion with moving parts like this one has been confusing for me for a long time.
+I've written this swap trick by hand a lot of times, and it still feels smart and powerful. It is also genuinely useful: whenever I want a quick brute force to check an optimized solution against, and that brute force has to try every way of arranging some items, I reach for this. I generate all the permutations and test each one just before `result.push(arr.slice());`. Take the time to get comfortable with it — recursion with moving parts like this confused me for a long time, and it is worth re-reading the trace above until the undo step feels obvious.
 
 Let's now explore another flavor of backtracking: let's try generating all the subsets of `[1, 2, 3]`. Order no longer matters — picking 1 and then 3 produces the same subset as picking 3 and then 1. If we reuse the permutations tree, we generate both, and in general every subset of size k appears k! times. So the key question is: how do we build the decision tree so that each subset appears exactly once?
 
@@ -460,7 +483,7 @@ function distributeCookies(cookies: number[], k: number): number {
 }
 ```
 
-To convince ourselves that we're not just being lucky, one simple but effective optimization we can do is to get rid of ` Math.max(...sums)` for each leaf and instead carry over the intermediate max downwads. This makes it run in ~500ms instead of ~1600ms at the time of writing.
+To convince ourselves that we're not just being lucky, one simple but effective optimization we can do is to get rid of ` Math.max(...sums)` for each leaf and instead carry over the intermediate max downwards. This makes it run in ~500ms instead of ~1600ms at the time of writing.
 
 ```TS
 function distributeCookies(cookies: number[], k: number): number {

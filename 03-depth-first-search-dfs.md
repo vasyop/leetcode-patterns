@@ -2,7 +2,8 @@
 
 # Depth-First Search (DFS)
 
-- ~17% of medium to hard leetcode problems involve some kind of DFS
+- ~9% of the medium and hard problems I tracked are solved by a DFS traversal on its own.
+- Counting top-down DP, which is DFS with a memo bolted on, some form of DFS shows up in ~36% of them.
 
 ## Prerequisites
 
@@ -28,7 +29,7 @@ DFS is a way to visit every node in a graph or a tree. As you may recall, a tree
 
 For now, let's focus on trees. The node we start from is called the root. We can choose any node as the root, as long as we treat all the other nodes as its descendants. No matter which node we pick, we can rearrange the rest below it and it will still be a valid tree.
 
-DFS starts at the root and explores each child from left to right. For each child, it goes as deep as possible before coming back up to the parent. It only moves back up when there are no more nodes left to visit below the current one. Once all branches have been explored, the traversal ends back at the root. Consider the figure below. [This](./animations/dfs-no-list.md) is how DFS moves until reaching node J. DFS prefers in a sort of counter-clockwise order on the edges of a tree. Down, left, right, and the back up.
+DFS starts at the root and explores each child from left to right. For each child, it goes as deep as possible before coming back up to the parent. It only moves back up when there are no more nodes left to visit below the current one. Once all branches have been explored, the traversal ends back at the root. Consider the figure below. [This](./animations/dfs-no-list.md) is how DFS moves until reaching node J. Traced out on the drawing, DFS walks the outline of the tree counter-clockwise: from any node it goes down first, taking the leftmost unexplored child, then the next one to its right, and only back up once none are left.
 
              A
             / \
@@ -99,7 +100,7 @@ function dfs(node: number) {
 }
 ```
 
-This still uses a stack under the hood — the call stack — but we don't have to manage it ourselves. Each stack frame represents one node in the traversal and each stack frame holds two local variabels: a parameter `node` and the iterator of the for loop. The stack frame at the top of the stack is where DFS currently is. The call stack behaves exactly like the explicit stack from iterative DFS. The logic from the `while` loop of the iteratvie version is baked into the single for loop of the recursive version. `dfs(child)` pushes a new stack frame and advances the iterator just like the first branch of the `if` statement in interative DFS. After all the children have been traversed, the recursive dfs function finishes, returns, and the top stack frame is popped off the call stack, analogous to the `else` branch of iterative DFS. It's very elegant how recursive DFS uses the programming language implementation to its advantage.
+This still uses a stack under the hood — the call stack — but we don't have to manage it ourselves. Each stack frame represents one node in the traversal and each stack frame holds two local variables: a parameter `node` and the iterator of the for loop. The stack frame at the top of the stack is where DFS currently is. The call stack behaves exactly like the explicit stack from iterative DFS. The logic from the `while` loop of the iterative version is baked into the single for loop of the recursive version. `dfs(child)` pushes a new stack frame and advances the iterator just like the first branch of the `if` statement in iterative DFS. After all the children have been traversed, the recursive dfs function finishes, returns, and the top stack frame is popped off the call stack, analogous to the `else` branch of iterative DFS. It's very elegant how recursive DFS uses the programming language implementation to its advantage.
 
 The downsides of the recursive version are:
 
@@ -163,7 +164,7 @@ To decide this for a node, we need to know the `k` smallest values sitting below
 
 ```TS
 const asc = (a: number, b: number) => a - b
-function countGreatEnoughNodes(root: TreeNode, k: number): number {
+function countGreatEnoughNodes(root: TreeNode | null, k: number): number {
     let res = 0
     lowestK(root)
     return res
@@ -195,7 +196,7 @@ The key line is `const left = lowestK(node.left)` followed by `const right = low
 
 One thing to watch here is cost. Every node sorts a list of size up to `k`, so with `n` nodes the work is roughly `O(n · k · log k)` — fine when `k` is small, but worth keeping in mind on large trees, where a costly sort inside the recursion will not be fast enough.
 
-Let's now have a look at [maximum width of binary tree](https://leetcode.com/problems/maximum-width-of-binary-tree/): the width of a level is the distance between its leftmost and rightmost nodes, counting the missing nodes in between. The question is: how do we easily compute the position of each node? Let's quckly draw the tree so we can take a better look at it without wasting brain power to imagine it.
+Let's now have a look at [maximum width of binary tree](https://leetcode.com/problems/maximum-width-of-binary-tree/): the width of a level is the distance between its leftmost and rightmost nodes, counting the missing nodes in between. The question is: how do we easily compute the position of each node? Let's quickly draw the tree so we can take a better look at it without wasting brain power to imagine it.
 
                             1
                           /    \
@@ -205,10 +206,10 @@ Let's now have a look at [maximum width of binary tree](https://leetcode.com/pro
                   / \    / \   / \   / \
                  1   2  3   4 5   6  7  8
 
-Let's say we are at node 3 (marked with `*`) and we want to compute the position of its children. Before node 3, there are 2 nodes on the same level: 1 and 2. This means that before the first child of node 3, there are 4 children (2 chidren for node 1 and 2 fore node 2). So the position of the left child of node 3 must be `4 + 1 = 5`. So for each node, to find the position of the left child, just multiply its position - 1 by 2 and add 1: `leftPos = (pos - 1) * 2 + 1`. And the right child is immediately after it `rightPos = (pos - 1) * 2 + 2` or simply `pos * 2`. This DFS will explore our tree with the correct position computed and passed down for each node.
+Let's say we are at node 3 (marked with `*`) and we want to compute the position of its children. Before node 3, there are 2 nodes on the same level: 1 and 2. This means that before the first child of node 3, there are 4 children (2 children for node 1 and 2 for node 2). So the position of the left child of node 3 must be `4 + 1 = 5`. So for each node, to find the position of the left child, just multiply its position - 1 by 2 and add 1: `leftPos = (pos - 1) * 2 + 1`. And the right child is immediately after it `rightPos = (pos - 1) * 2 + 2` or simply `pos * 2`. This DFS will explore our tree with the correct position computed and passed down for each node.
 
 ```TS
-  function dfs(node: TreeNode, pos: number) {
+  function dfs(node: TreeNode | null, pos: number) {
     dfs(node.left, (pos - 1) * 2 + 1);
     dfs(node.right, pos * 2);
   }
@@ -217,7 +218,7 @@ Let's say we are at node 3 (marked with `*`) and we want to compute the position
 But we need to watch out: some of the nodes could be missing. `node.left` or `node.right` could be `null`. So we check that.
 
 ```TS
-  function dfs(node: TreeNode, pos: number) {
+  function dfs(node: TreeNode | null, pos: number) {
     if(!node) {
       return
     }
@@ -239,20 +240,20 @@ Now, suppose we explore this tree, how to compute the max width on each level?
 Let's remember the order of DFS which goes down and left before going up again. DFS guarantees that, for each level, the first node on that level will be reached first and the last node will be reached last. So we can simply pass the level down through the recursion and store the position of the first node of each level. We know it's the first node if there is no currently stored position for that level. Then, if there is a position stored for that level, it means we are at a node which is not the first, and we need to consider the distance between this node and the first node. We don't care if the current node is the last one or not because at some point, DFS will reach the last node on each level.
 
 ```TS
-function widthOfBinaryTree(root: TreeNode) {
+function widthOfBinaryTree(root: TreeNode | null): number {
     const minPos: number[] = [];
     let maxWidth = 1;
 
     dfs(root, 0, 1);
     return maxWidth;
 
-    function dfs(node: TreeNode, level: number, pos: number) {
+    function dfs(node: TreeNode | null, level: number, pos: number) {
       if(!node) {
           return;
       }
 
       if(minPos[level] === undefined) {
-        minPos.push(pos);
+        minPos[level] = pos;
       } else {
         const diff = pos - minPos[level];
         if(diff + 1 > maxWidth) {
@@ -266,7 +267,7 @@ function widthOfBinaryTree(root: TreeNode) {
 }
 ```
 
-For this problem, there one more very subtle missing piece here that doesn't have to do with DFS. The problem statement guarantees that the max width fits in a 32bit integer, but it does not guarantee that `pos` fits into a 32bit integer and indeed running this exact code will fail. Let's imagine a very thin tree that only has a right child for the first 100 levels and on the 101th level it has two leaf children. This tree is very much valid given the problem statement. The issue is that on the last level, `pos` ends up being `2^100`, which greatly exceeds the integer overflow limit in most languages. There are a few ways to fix this, but the simplest one to understand is to use `BigInt`, which has no chance to overflow. It will automatically adjust its internal state as it grows. And `BigInt` is also something to get familiar with, as it proves itself useful quite often.
+For this problem there is one more very subtle missing piece, and it has nothing to do with DFS. The problem statement guarantees that the max width fits in a 32bit integer, but it does not guarantee that `pos` fits into a 32bit integer and indeed running this exact code will fail. Let's imagine a very thin tree that only has a right child for the first 100 levels and on the 101st level it has two leaf children. This tree is very much valid given the problem statement. The issue is that on the last level, `pos` ends up being `2^100`. In a language with 32-bit or 64-bit integers that overflows outright; in JavaScript every number is a double, so it does something quieter and just as fatal — above `2^53` consecutive integers stop being representable, and `pos` silently rounds. Two different positions can then compare as equal, and the width comes out wrong. There are a few ways to fix this, but the simplest one to understand is to use `BigInt`, which keeps every digit. It will automatically adjust its internal state as it grows. And `BigInt` is also something to get familiar with, as it proves itself useful quite often.
 
 ```TS
 function widthOfBinaryTree(root: TreeNode | null): number {
@@ -283,7 +284,7 @@ function widthOfBinaryTree(root: TreeNode | null): number {
         }
 
         if (minPos[level] === undefined) {
-            minPos.push(pos)
+            minPos[level] = pos
         } else {
           const diff = pos - minPos[level]
           if (diff + 1n > maxWidth) {
@@ -464,7 +465,7 @@ function smallestFromLeaf(root: TreeNode | null): string {
 
 **[Minimum Time to Collect All Apples in a Tree](https://leetcode.com/problems/minimum-time-to-collect-all-apples-in-a-tree/)**
 
-We notice that there is no point going down to (and back up from) a child if the child's entire subtree has no apples. So the question is: which are the subtrees without any apples? We can progpagate upwards the count of apples of each subtree:
+We notice that there is no point going down to (and back up from) a child if the child's entire subtree has no apples. So the question is: which are the subtrees without any apples? We can propagate upwards the count of apples of each subtree:
 for any given node, if we know the count of apples of all children subtrees, we can compute the count of apples of that node's subtree. If a child subtree has at least 1 apple, we know we need to go down to that child and back up from it, so we increment the final result by 2.
 
 ```TS

@@ -116,7 +116,7 @@ The unusual cases become important only near the boundary. If one possible solut
 
 Constraint analysis is therefore not about predicting the exact runtime. It is about eliminating impossible approaches and identifying the range of approaches that are likely to be fast enough.
 
-We are going to practice constrains analysis throughout the problems in this book.
+We are going to practice constraints analysis throughout the problems in this book.
 
 ## The oracle
 
