@@ -1,7 +1,7 @@
 {
     "title": "LeetCode Patterns",
     "site": "https://vasyop.github.io/leetcode-patterns/",
-    "generated": "2026-09-23T05:19:14.771Z",
+    "generated": "2026-09-23T05:37:07.815Z",
     "pages": [
         {
             "path": "README.md",
@@ -17,7 +17,7 @@
             "title": "Introduction",
             "number": 1,
             "listed": true,
-            "words": 2160
+            "words": 2152
         },
         {
             "path": "02-constraints-and-time-complexity.md",
@@ -25,7 +25,7 @@
             "title": "Constraints and time complexity",
             "number": 2,
             "listed": true,
-            "words": 1422
+            "words": 1414
         },
         {
             "path": "03-depth-first-search-dfs.md",
@@ -33,7 +33,7 @@
             "title": "Depth-First Search (DFS)",
             "number": 3,
             "listed": true,
-            "words": 3522
+            "words": 3514
         },
         {
             "path": "04-backtracking.md",
@@ -41,7 +41,7 @@
             "title": "Backtracking",
             "number": 4,
             "listed": true,
-            "words": 3489
+            "words": 3481
         },
         {
             "path": "05-top-down-DP.md",
@@ -49,7 +49,7 @@
             "title": "Top-down DP",
             "number": 5,
             "listed": true,
-            "words": 12531
+            "words": 12523
         },
         {
             "path": "animations/dfs-next-child-index.md",

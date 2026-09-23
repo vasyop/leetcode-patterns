@@ -1,5 +1,3 @@
-[← Back to contents](README.md)
-
 # Backtracking
 
 - ~8% of the medium and hard problems I tracked. In my notes backtracking shares a tag with plain
@@ -579,5 +577,3 @@ function constructDistancedSequence(size: number): number[] {
     return arr;
 }
 ```
-
-[← Back to contents](README.md)

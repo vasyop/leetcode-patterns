@@ -1,5 +1,3 @@
-[← Back to contents](README.md)
-
 # Constraints and time complexity
 
 ## Prerequisites
@@ -125,6 +123,3 @@ An oracle is a small program you build — or have ready before a contest — to
 The oracle is most valuable when your optimized solution has tricky edge cases or non-obvious logic, but the brute force is short and obviously correct. It is also only practical when generating random inputs is straightforward — if constructing a valid random input requires significant effort, the oracle may not be worth building. But in many problems, especially those involving arrays, strings, or small graphs, a generator is a few lines and the brute force is a nested loop. In that case, an oracle can find a bug in minutes that might take an hour to find by reasoning alone. This matters even more during a contest, where the judge only tells you that some hidden test failed — an oracle is often the only way to actually see the counterexample.
 
 We will not worry about using an oracle for the most part of this book, but it's a very useful concept to know about.
-
-
-[← Back to contents](README.md)

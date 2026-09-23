@@ -1,5 +1,3 @@
-[← Back to contents](README.md)
-
 # Depth-First Search (DFS)
 
 - ~9% of the medium and hard problems I tracked are solved by a DFS traversal on its own.
@@ -662,5 +660,3 @@ function longestPath(parent: number[], s: string): number {
     }
 }
 ```
-
-[← Back to contents](README.md)

@@ -1,5 +1,3 @@
-[← Back to contents](README.md)
-
 # Top-down DP
 
 - ~26% of the medium and hard problems I tracked involve top-down DP, and roughly a third of those
@@ -2690,5 +2688,3 @@ function paintWalls(cost: number[], time: number[]): number {
     }
 }
 ```
-
-[← Back to contents](README.md)

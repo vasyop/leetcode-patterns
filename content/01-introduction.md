@@ -1,5 +1,3 @@
-[← Back to contents](README.md)
-
 # Introduction
 
 ## Why does this book exist?
@@ -77,5 +75,3 @@ Every problem mentioned in this book is solved in TypeScript and the ideas behin
 Do not _only_ read the chapters. After learning a technique, solve the practice problems for that chapter. Most of them should feel easy, even though the focus of this book is on mediums and hards. These problems are designed to make the new pattern obvious enough that you can focus on understanding it. There are larger practice pools every once in a while that combine several techniques. Later practice pools will include more and more patterns. This is where you simulate a real world interview scenario.
 
 By the end, when you sit down with a new problem, you should be able to break it into familiar pieces, come up with a small number of plausible approaches, rule out the ones that won't fit the constraints, and implement the simplest solution that actually works.
-
-[← Back to contents](README.md)
