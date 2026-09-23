@@ -379,15 +379,51 @@ kbd {
     font-size: 12.5px;
 }
 
-.sidebar-extra {
-    margin-top: 20px;
-    padding: 16px 0 0;
+/* one collapsible group per content folder, below the numbered chapters */
+.sidebar-group {
+    margin-top: 18px;
+    padding-top: 14px;
     border-top: 1px solid var(--border-soft);
 }
 
-.sidebar-extra .sidebar-title {
-    display: block;
-    padding: 0 10px 6px;
+.sidebar-group > summary {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 4px 10px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    list-style: none;
+}
+
+.sidebar-group > summary::-webkit-details-marker {
+    display: none;
+}
+
+.sidebar-group > summary:hover {
+    color: var(--text);
+}
+
+.sidebar-group > summary::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    flex: none;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    rotate: -45deg;
+    transition: rotate 0.16s;
+}
+
+.sidebar-group[open] > summary::before {
+    rotate: 45deg;
+}
+
+.group-count {
+    margin-left: auto;
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-faint);
 }
 
 .sidebar-foot {

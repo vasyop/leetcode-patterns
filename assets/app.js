@@ -17,7 +17,6 @@
     const el = {
         doc: $('doc'),
         chapterList: $('chapter-list'),
-        extraList: $('extra-list'),
         sidebarExtra: $('sidebar-extra'),
         sidebar: $('sidebar'),
         bookMeta: $('book-meta'),
@@ -113,15 +112,30 @@
             el.chapterList.append(li);
         }
 
-        el.extraList.innerHTML = '';
-        for (const page of extras) {
-            const li = document.createElement('li');
-            li.dataset.route = page.route;
-            li.innerHTML = `<a class="chapter-link" href="${routeHref(page.route)}"><span class="chapter-name"></span></a>`;
-            li.querySelector('.chapter-name').textContent = page.title;
-            el.extraList.append(li);
+        // one <details> per content folder, so a folder of 46 posts stays folded
+        el.sidebarExtra.innerHTML = '';
+        const sections = book.sections ?? [...new Set(extras.map((p) => p.section))].map((key) => ({ key, label: key }));
+        for (const section of sections) {
+            const inSection = extras.filter((p) => p.section === section.key);
+            if (!inSection.length) {
+                continue;
+            }
+            const group = document.createElement('details');
+            group.className = 'sidebar-group';
+            group.dataset.section = section.key;
+            group.open = inSection.length <= 8;
+            group.innerHTML = `<summary><span class="sidebar-title"></span><span class="group-count">${inSection.length}</span></summary><ol class="chapter-list"></ol>`;
+            group.querySelector('.sidebar-title').textContent = section.label ?? section.key;
+            const list = group.querySelector('.chapter-list');
+            for (const page of inSection) {
+                const li = document.createElement('li');
+                li.dataset.route = page.route;
+                li.innerHTML = `<a class="chapter-link" href="${routeHref(page.route)}"><span class="chapter-name"></span></a>`;
+                li.querySelector('.chapter-name').textContent = page.title;
+                list.append(li);
+            }
+            el.sidebarExtra.append(group);
         }
-        el.sidebarExtra.hidden = extras.length === 0;
 
         const words = book.pages.reduce((sum, p) => sum + (p.words || 0), 0);
         const numbered = chapters.filter((p) => p.number !== null).length;
@@ -130,6 +144,12 @@
 
     // the open chapter grows an inline list of its own headings
     function markActiveChapter(route, headings) {
+        const page = byRoute.get(route || 'README');
+        for (const group of el.sidebar.querySelectorAll('.sidebar-group')) {
+            if (group.dataset.section === page?.section) {
+                group.open = true;
+            }
+        }
         for (const li of el.sidebar.querySelectorAll('li[data-route]')) {
             const active = li.dataset.route === route;
             li.querySelector('.chapter-link').classList.toggle('active', active);
