@@ -6,9 +6,11 @@
  * property. Filter recordings and insights on that property (or on
  * `$host = vasyop.github.io`) to see the book on its own.
  *
- * The SDK loads once the page is idle, so it never competes with the first
- * chapter render. Pageviews are captured by hand from app.js, because the viewer
- * routes through the hash and only a chapter change counts as a new page.
+ * The SDK waits until the first chapter has painted and the main thread is idle.
+ * Waiting for `load` alone is not enough: it fires before the viewer has even
+ * fetched the chapter, so the SDK and recorder would compete with it. Pageviews
+ * are captured by hand from app.js, because the viewer routes through the hash
+ * and only a chapter change counts as a new page.
  */
 (() => {
     'use strict';
@@ -40,11 +42,30 @@
                 capturePage(route, title);
             } else {
                 pending.push([route, title]);
+                scheduleLoad();
             }
         },
     };
 
+    let scheduled = false;
+    let started = false;
+
+    // app.js calls page() just before it renders the chapter: two frames later it is on screen
+    function scheduleLoad() {
+        if (scheduled) {
+            return;
+        }
+        scheduled = true;
+        requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(whenIdle, 0)));
+    }
+
+    const whenIdle = () => (window.requestIdleCallback ? requestIdleCallback(load, { timeout: 4000 }) : setTimeout(load, 1500));
+
     function load() {
+        if (started) {
+            return;
+        }
+        started = true;
         const script = document.createElement('script');
         script.src = SDK_URL;
         script.async = true;
@@ -59,6 +80,7 @@
                 capture_pageview: false,
                 capture_pageleave: true,
                 person_profiles: 'never',
+                disable_surveys: true,
                 session_recording: {
                     sampleRate: 1,
                     // the only input is the search field, and seeing what readers look for is the point
@@ -76,10 +98,6 @@
         document.head.append(script);
     }
 
-    const whenIdle = () => (window.requestIdleCallback ? requestIdleCallback(load, { timeout: 5000 }) : setTimeout(load, 1200));
-    if (document.readyState === 'complete') {
-        whenIdle();
-    } else {
-        window.addEventListener('load', whenIdle, { once: true });
-    }
+    // a page that never renders a chapter (the manifest failed, say) still gets recorded
+    window.addEventListener('load', () => setTimeout(whenIdle, 5000), { once: true });
 })();
