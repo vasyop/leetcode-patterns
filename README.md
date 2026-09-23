@@ -30,8 +30,15 @@ node scripts/publish-book.mjs            # from the authoring repo
 node scripts/publish-book.mjs --dry-run  # see what would be published
 ```
 
-That script only ever rewrites `content/`. Everything else here — the viewer, the workflow, this
-README — is maintained by hand and is safe from it.
+That script only ever rewrites `content/`. Everything else here — the viewer, this README — is
+maintained by hand and is safe from it.
+
+Two conventions carry over from `book/`:
+
+- A name starting with `_` is a draft and is not published at all.
+- A file at the top level is a chapter and appears in the contents. A file in a subdirectory,
+  like `content/animations/`, is published and readable but stays out of the sidebar — the only
+  way in is a link from a chapter. The manifest records this as `listed`.
 
 ## Running it locally
 
@@ -49,5 +56,5 @@ python -m http.server 8000
 - Relative `*.md` links are rewritten to in-app routes, so the same files still read correctly on
   GitHub.
 - Headings get stable anchors, so `#/04-backtracking#pruning` deep links work.
-- `Ctrl`/`⌘` + `K`, or `/`, opens full-text search across every chapter.
+- `Ctrl`/`⌘` + `K`, or `/`, opens full-text search across every published page, listed or not.
 - `j` / `k` and the arrow keys step through chapters.
