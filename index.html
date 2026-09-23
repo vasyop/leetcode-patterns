@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>LeetCode Patterns</title>
+<meta name="description" content="A book about the patterns behind LeetCode problems: what is worth learning, how deeply, and in what order." />
+<meta name="color-scheme" content="dark light" />
+<meta property="og:title" content="LeetCode Patterns" />
+<meta property="og:description" content="A book about the patterns behind LeetCode problems: what is worth learning, how deeply, and in what order." />
+<meta property="og:type" content="book" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%236366f1'/%3E%3Cpath d='M9 8v16h14' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M13 19l3.5-4.5L20 18l3-5' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" />
+<link rel="stylesheet" href="assets/styles.css" />
+<script>
+    // runs before first paint so the stored theme never flashes
+    (() => {
+        let stored = null;
+        try {
+            stored = localStorage.getItem('lcp:theme');
+        } catch {}
+        const dark = stored ? stored === 'dark' : !window.matchMedia('(prefers-color-scheme: light)').matches;
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    })();
+</script>
+</head>
+<body>
+<div class="progress" id="progress"><span id="progress-bar"></span></div>
+
+<header class="topbar">
+  <button class="icon-btn menu-btn" id="menu-btn" aria-label="Open chapter list" aria-expanded="false">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  </button>
+
+  <a class="brand" href="#/">
+    <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+      <rect width="32" height="32" rx="7" fill="currentColor" />
+      <path d="M9 8v16h14" fill="none" stroke="var(--brand-ink)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M13 19l3.5-4.5L20 18l3-5" fill="none" stroke="var(--brand-ink)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span class="brand-text">LeetCode&nbsp;Patterns</span>
+  </a>
+
+  <button class="search-trigger" id="search-trigger">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+    <span>Search the book</span>
+    <kbd id="search-kbd">Ctrl K</kbd>
+  </button>
+
+  <div class="topbar-actions">
+    <button class="icon-btn" id="theme-btn" aria-label="Switch theme" title="Switch theme">
+      <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/></svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.2A8.2 8.2 0 1 1 9.8 4a6.6 6.6 0 0 0 10.2 10.2z"/></svg>
+    </button>
+    <a class="icon-btn" id="repo-link" href="https://github.com/vasyop/leetcode-patterns" target="_blank" rel="noopener" aria-label="Feedback on GitHub" title="Feedback">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-2.6-.4L5 21l1.2-3.3A8.2 8.2 0 0 1 4 11.5 8.4 8.4 0 0 1 12.5 3 8.4 8.4 0 0 1 21 11.5z"/></svg>
+    </a>
+  </div>
+</header>
+
+<div class="scrim" id="scrim" hidden></div>
+
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Chapters">
+    <div class="sidebar-inner">
+      <div class="sidebar-head">
+        <span class="sidebar-title">Contents</span>
+        <span class="sidebar-meta" id="book-meta"></span>
+      </div>
+      <ol class="chapter-list" id="chapter-list"></ol>
+      <div class="sidebar-extra" id="sidebar-extra" hidden>
+        <span class="sidebar-title">Animations</span>
+        <ol class="chapter-list plain" id="extra-list"></ol>
+      </div>
+      <footer class="sidebar-foot">
+        <a href="https://github.com/vasyop/leetcode-patterns/issues/1" target="_blank" rel="noopener">Feedback &amp; new chapters</a>
+        <a href="https://www.paypal.me/vasyop" target="_blank" rel="noopener">Support the book</a>
+      </footer>
+    </div>
+  </nav>
+
+  <main class="main" id="main">
+    <article class="doc" id="doc" aria-busy="true">
+      <div class="skeleton">
+        <span style="width:42%"></span><span style="width:96%"></span><span style="width:88%"></span>
+        <span style="width:92%"></span><span style="width:60%"></span>
+      </div>
+    </article>
+    <nav class="pager" id="pager" aria-label="Chapter navigation"></nav>
+    <footer class="doc-foot">
+      <span id="foot-note"></span>
+    </footer>
+  </main>
+
+  <aside class="outline" id="outline" aria-label="On this page">
+    <div class="outline-inner">
+      <span class="outline-title">On this page</span>
+      <ul id="outline-list"></ul>
+    </div>
+  </aside>
+</div>
+
+<div class="palette" id="palette" hidden role="dialog" aria-modal="true" aria-label="Search the book">
+  <div class="palette-scrim" data-close></div>
+  <div class="palette-box">
+    <div class="palette-input">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      <input id="palette-field" type="search" placeholder="Search chapters, headings, code…" autocomplete="off" spellcheck="false" />
+      <kbd>Esc</kbd>
+    </div>
+    <div class="palette-results" id="palette-results"></div>
+    <div class="palette-foot">
+      <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+      <span><kbd>↵</kbd> open</span>
+      <span id="palette-count"></span>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
+<script src="assets/app.js" defer></script>
+</body>
+</html>

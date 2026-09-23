@@ -1,28 +1,48 @@
-# LeetCode Patterns
+# leetcode-patterns
 
-A book about the patterns behind LeetCode problems: what is worth learning, how deeply it is
-worth learning, and in what order. It aims to cover the space between basic interview
-preparation and roughly a 2200 contest rating, with every technique explained through
-carefully selected problems that are solved end to end.
+The site behind **[LeetCode Patterns](https://vasyop.github.io/leetcode-patterns/)** — a book about
+the patterns behind LeetCode problems.
 
-This is a work in progress — chapters are added as they are written.
+This repository is private. The GitHub Pages site it publishes is public.
 
-## Chapters
+## What lives where
 
-1. [Introduction](01-introduction.md)
-2. [Constraints and time complexity](02-constraints-and-time-complexity.md)
-3. [Depth-First Search (DFS)](03-depth-first-search-dfs.md)
-4. [Backtracking](04-backtracking.md)
-5. [Top-down DP / DFS + memo](05-top-down-DP.md)
+| Path                          | What it is                                                           |
+| ----------------------------- | -------------------------------------------------------------------- |
+| `index.html`                  | The viewer shell.                                                      |
+| `assets/styles.css`           | All styling, light and dark.                                           |
+| `assets/app.js`               | Router, markdown rendering, outline, search. No build step.            |
+| `content/`                    | The book itself — **generated, do not edit here.**                     |
+| `content/manifest.json`       | Chapter order, titles and word counts, rewritten on every publish.     |
+| `.github/workflows/pages.yml` | Assembles `_site/` and deploys it to Pages on every push to `main`.    |
 
-## Feedback and new chapters
+## Where the chapters come from
 
-Questions, corrections and suggestions go in
-[the feedback issue](https://github.com/vasyop/leetcode-patterns/issues/1). Subscribe to it
-to be notified when a new chapter is released — I post a comment there every time one goes up.
+The markdown is authored in the private `template` repository, under `book/`, and pushed here by:
 
-## Donations
+```sh
+node scripts/publish-book.mjs            # from the authoring repo
+node scripts/publish-book.mjs --dry-run  # see what would be published
+```
 
-The book is free and will stay free. If it saved you time and you feel like giving something
-back, you can [send a donation via PayPal](https://www.paypal.me/vasyop).
-Completely optional — feedback is worth more to me than money.
+That script only ever rewrites `content/`. Everything else here — the viewer, the workflow, this
+README — is maintained by hand and is safe from it.
+
+## Running it locally
+
+The viewer fetches markdown over `fetch()`, so it needs a server rather than `file://`:
+
+```sh
+python -m http.server 8000
+# then open http://localhost:8000
+```
+
+## How the viewer treats the markdown
+
+- Fenced blocks with a language are syntax highlighted; blocks without one are treated as ASCII
+  diagrams and are never highlighted or reflowed.
+- Relative `*.md` links are rewritten to in-app routes, so the same files still read correctly on
+  GitHub.
+- Headings get stable anchors, so `#/04-backtracking#pruning` deep links work.
+- `Ctrl`/`⌘` + `K`, or `/`, opens full-text search across every chapter.
+- `j` / `k` and the arrow keys step through chapters.
