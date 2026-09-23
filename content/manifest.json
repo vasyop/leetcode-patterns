@@ -1,24 +1,14 @@
 {
     "title": "LeetCode Patterns",
     "site": "https://vasyop.github.io/leetcode-patterns/",
-    "generated": "2026-09-23T05:06:55.402Z",
-    "sections": [
-        {
-            "key": "animations",
-            "label": "Animations"
-        },
-        {
-            "key": "leetcode-posts",
-            "label": "LeetCode posts"
-        }
-    ],
+    "generated": "2026-09-23T05:19:14.771Z",
     "pages": [
         {
             "path": "README.md",
             "route": "",
             "title": "Contents",
             "number": null,
-            "section": "book",
+            "listed": true,
             "words": 168
         },
         {
@@ -26,7 +16,7 @@
             "route": "01-introduction",
             "title": "Introduction",
             "number": 1,
-            "section": "book",
+            "listed": true,
             "words": 2160
         },
         {
@@ -34,7 +24,7 @@
             "route": "02-constraints-and-time-complexity",
             "title": "Constraints and time complexity",
             "number": 2,
-            "section": "book",
+            "listed": true,
             "words": 1422
         },
         {
@@ -42,7 +32,7 @@
             "route": "03-depth-first-search-dfs",
             "title": "Depth-First Search (DFS)",
             "number": 3,
-            "section": "book",
+            "listed": true,
             "words": 3522
         },
         {
@@ -50,7 +40,7 @@
             "route": "04-backtracking",
             "title": "Backtracking",
             "number": 4,
-            "section": "book",
+            "listed": true,
             "words": 3489
         },
         {
@@ -58,7 +48,7 @@
             "route": "05-top-down-DP",
             "title": "Top-down DP",
             "number": 5,
-            "section": "book",
+            "listed": true,
             "words": 12531
         },
         {
@@ -66,7 +56,7 @@
             "route": "animations/dfs-next-child-index",
             "title": "DFS traversal - stack with next-child indices",
             "number": null,
-            "section": "animations",
+            "listed": false,
             "words": 149
         },
         {
@@ -74,7 +64,7 @@
             "route": "animations/dfs-no-list",
             "title": "DFS traversal - the current node at every step",
             "number": null,
-            "section": "animations",
+            "listed": false,
             "words": 19
         },
         {
@@ -82,376 +72,8 @@
             "route": "animations/dfs-path",
             "title": "DFS traversal - the path list at every step",
             "number": null,
-            "section": "animations",
+            "listed": false,
             "words": 118
-        },
-        {
-            "path": "leetcode-posts/apply-operations-to-make-two-strings-equal.md",
-            "route": "leetcode-posts/apply-operations-to-make-two-strings-equal",
-            "title": "Apply Operations to Make Two Strings Equal",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 642
-        },
-        {
-            "path": "leetcode-posts/best-time-to-buy-and-sell-stock-v.md",
-            "route": "leetcode-posts/best-time-to-buy-and-sell-stock-v",
-            "title": "Best Time to Buy and Sell Stock V",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 795
-        },
-        {
-            "path": "leetcode-posts/can-i-win.md",
-            "route": "leetcode-posts/can-i-win",
-            "title": "Can I Win",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 532
-        },
-        {
-            "path": "leetcode-posts/coin-change.md",
-            "route": "leetcode-posts/coin-change",
-            "title": "Coin Change",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 680
-        },
-        {
-            "path": "leetcode-posts/count-paths-with-the-given-xor-value.md",
-            "route": "leetcode-posts/count-paths-with-the-given-xor-value",
-            "title": "Count Paths With the Given XOR Value",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 500
-        },
-        {
-            "path": "leetcode-posts/count-vowels-permutation.md",
-            "route": "leetcode-posts/count-vowels-permutation",
-            "title": "Count Vowels Permutation",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 450
-        },
-        {
-            "path": "leetcode-posts/count-ways-to-choose-coprime-integers-from-rows.md",
-            "route": "leetcode-posts/count-ways-to-choose-coprime-integers-from-rows",
-            "title": "Count Ways to Choose Coprime Integers from Rows",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 457
-        },
-        {
-            "path": "leetcode-posts/dice-roll-simulation.md",
-            "route": "leetcode-posts/dice-roll-simulation",
-            "title": "Dice Roll Simulation",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 492
-        },
-        {
-            "path": "leetcode-posts/find-all-possible-stable-binary-arrays-i.md",
-            "route": "leetcode-posts/find-all-possible-stable-binary-arrays-i",
-            "title": "Find All Possible Stable Binary Arrays I",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 568
-        },
-        {
-            "path": "leetcode-posts/find-the-number-of-subsequences-with-equal-gcd.md",
-            "route": "leetcode-posts/find-the-number-of-subsequences-with-equal-gcd",
-            "title": "Find the Number of Subsequences With Equal GCD",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 501
-        },
-        {
-            "path": "leetcode-posts/frog-jump.md",
-            "route": "leetcode-posts/frog-jump",
-            "title": "Frog Jump",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 709
-        },
-        {
-            "path": "leetcode-posts/greatest-sum-divisible-by-three.md",
-            "route": "leetcode-posts/greatest-sum-divisible-by-three",
-            "title": "Greatest Sum Divisible by Three",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 722
-        },
-        {
-            "path": "leetcode-posts/house-robber.md",
-            "route": "leetcode-posts/house-robber",
-            "title": "House Robber",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 707
-        },
-        {
-            "path": "leetcode-posts/length-of-the-longest-subsequence-that-sums-to-target.md",
-            "route": "leetcode-posts/length-of-the-longest-subsequence-that-sums-to-target",
-            "title": "Length of the Longest Subsequence That Sums to Target",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 498
-        },
-        {
-            "path": "leetcode-posts/longest-common-subsequence.md",
-            "route": "leetcode-posts/longest-common-subsequence",
-            "title": "Longest Common Subsequence",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 532
-        },
-        {
-            "path": "leetcode-posts/longest-non-decreasing-subarray-from-two-arrays.md",
-            "route": "leetcode-posts/longest-non-decreasing-subarray-from-two-arrays",
-            "title": "Longest Non-decreasing Subarray From Two Arrays",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 461
-        },
-        {
-            "path": "leetcode-posts/max-dot-product-of-two-subsequences.md",
-            "route": "leetcode-posts/max-dot-product-of-two-subsequences",
-            "title": "Max Dot Product of Two Subsequences",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 511
-        },
-        {
-            "path": "leetcode-posts/maximum-amount-of-money-robot-can-earn.md",
-            "route": "leetcode-posts/maximum-amount-of-money-robot-can-earn",
-            "title": "Maximum Amount of Money Robot Can Earn",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 455
-        },
-        {
-            "path": "leetcode-posts/maximum-and-sum-of-array.md",
-            "route": "leetcode-posts/maximum-and-sum-of-array",
-            "title": "Maximum AND Sum of Array",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 580
-        },
-        {
-            "path": "leetcode-posts/maximum-non-negative-product-in-a-matrix.md",
-            "route": "leetcode-posts/maximum-non-negative-product-in-a-matrix",
-            "title": "Maximum Non Negative Product in a Matrix",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 543
-        },
-        {
-            "path": "leetcode-posts/maximum-path-score-in-a-grid.md",
-            "route": "leetcode-posts/maximum-path-score-in-a-grid",
-            "title": "Maximum Path Score in a Grid",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 455
-        },
-        {
-            "path": "leetcode-posts/maximum-points-after-collecting-coins-from-all-nodes.md",
-            "route": "leetcode-posts/maximum-points-after-collecting-coins-from-all-nodes",
-            "title": "Maximum Points After Collecting Coins From All Nodes",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 502
-        },
-        {
-            "path": "leetcode-posts/maximum-profit-from-valid-topological-order-in-dag.md",
-            "route": "leetcode-posts/maximum-profit-from-valid-topological-order-in-dag",
-            "title": "Maximum Profit From Valid Topological Order in DAG",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 544
-        },
-        {
-            "path": "leetcode-posts/maximum-score-of-spliced-array.md",
-            "route": "leetcode-posts/maximum-score-of-spliced-array",
-            "title": "Maximum Score of Spliced Array",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 492
-        },
-        {
-            "path": "leetcode-posts/minimum-increments-for-target-multiples-in-an-array.md",
-            "route": "leetcode-posts/minimum-increments-for-target-multiples-in-an-array",
-            "title": "Minimum Increments for Target Multiples in an Array",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 504
-        },
-        {
-            "path": "leetcode-posts/minimum-number-of-work-sessions-to-finish-the-tasks.md",
-            "route": "leetcode-posts/minimum-number-of-work-sessions-to-finish-the-tasks",
-            "title": "Minimum Number of Work Sessions to Finish the Tasks",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 523
-        },
-        {
-            "path": "leetcode-posts/minimum-swaps-to-make-sequences-increasing.md",
-            "route": "leetcode-posts/minimum-swaps-to-make-sequences-increasing",
-            "title": "Minimum Swaps To Make Sequences Increasing",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 471
-        },
-        {
-            "path": "leetcode-posts/minimum-time-to-build-blocks.md",
-            "route": "leetcode-posts/minimum-time-to-build-blocks",
-            "title": "Minimum Time to Build Blocks",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 587
-        },
-        {
-            "path": "leetcode-posts/minimum-time-to-kill-all-monsters.md",
-            "route": "leetcode-posts/minimum-time-to-kill-all-monsters",
-            "title": "Minimum Time to Kill All Monsters",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 500
-        },
-        {
-            "path": "leetcode-posts/minimum-time-to-make-rope-colorful.md",
-            "route": "leetcode-posts/minimum-time-to-make-rope-colorful",
-            "title": "Minimum Time to Make Rope Colorful",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 480
-        },
-        {
-            "path": "leetcode-posts/minimum-total-distance-traveled.md",
-            "route": "leetcode-posts/minimum-total-distance-traveled",
-            "title": "Minimum Total Distance Traveled",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 561
-        },
-        {
-            "path": "leetcode-posts/minimum-xor-sum-of-two-arrays.md",
-            "route": "leetcode-posts/minimum-xor-sum-of-two-arrays",
-            "title": "Minimum XOR Sum of Two Arrays",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 675
-        },
-        {
-            "path": "leetcode-posts/number-of-great-partitions.md",
-            "route": "leetcode-posts/number-of-great-partitions",
-            "title": "Number of Great Partitions",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 630
-        },
-        {
-            "path": "leetcode-posts/ones-and-zeroes.md",
-            "route": "leetcode-posts/ones-and-zeroes",
-            "title": "Ones and Zeroes",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 462
-        },
-        {
-            "path": "leetcode-posts/paint-house-iii.md",
-            "route": "leetcode-posts/paint-house-iii",
-            "title": "Paint House III",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 508
-        },
-        {
-            "path": "leetcode-posts/painting-the-walls.md",
-            "route": "leetcode-posts/painting-the-walls",
-            "title": "Painting the Walls",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 623
-        },
-        {
-            "path": "leetcode-posts/palindrome-partitioning-iii.md",
-            "route": "leetcode-posts/palindrome-partitioning-iii",
-            "title": "Palindrome Partitioning III",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 560
-        },
-        {
-            "path": "leetcode-posts/README.md",
-            "route": "leetcode-posts/README",
-            "title": "LeetCode solution posts — top-down DP",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 389
-        },
-        {
-            "path": "leetcode-posts/regular-expression-matching.md",
-            "route": "leetcode-posts/regular-expression-matching",
-            "title": "Regular Expression Matching",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 559
-        },
-        {
-            "path": "leetcode-posts/shortest-common-supersequence.md",
-            "route": "leetcode-posts/shortest-common-supersequence",
-            "title": "Shortest Common Supersequence",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 494
-        },
-        {
-            "path": "leetcode-posts/special-permutations.md",
-            "route": "leetcode-posts/special-permutations",
-            "title": "Special Permutations",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 429
-        },
-        {
-            "path": "leetcode-posts/stickers-to-spell-word.md",
-            "route": "leetcode-posts/stickers-to-spell-word",
-            "title": "Stickers to Spell Word",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 483
-        },
-        {
-            "path": "leetcode-posts/stone-game-iii.md",
-            "route": "leetcode-posts/stone-game-iii",
-            "title": "Stone Game III",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 488
-        },
-        {
-            "path": "leetcode-posts/stone-game-iv.md",
-            "route": "leetcode-posts/stone-game-iv",
-            "title": "Stone Game IV",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 468
-        },
-        {
-            "path": "leetcode-posts/sum-of-k-subarrays-with-length-at-least-m.md",
-            "route": "leetcode-posts/sum-of-k-subarrays-with-length-at-least-m",
-            "title": "Sum of K Subarrays With Length at Least M",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 503
-        },
-        {
-            "path": "leetcode-posts/the-most-similar-path-in-a-graph.md",
-            "route": "leetcode-posts/the-most-similar-path-in-a-graph",
-            "title": "The Most Similar Path in a Graph",
-            "number": null,
-            "section": "leetcode-posts",
-            "words": 560
         }
     ]
 }
