@@ -50,13 +50,22 @@
     let scheduled = false;
     let started = false;
 
-    // app.js calls page() just before it renders the chapter: two frames later it is on screen
+    // Once the recorder starts it snapshots the whole page, so starting a little
+    // late loses nothing on screen, only the first seconds of scrolling.
+    const SETTLE_MS = 2000;
+
+    /*
+     * app.js calls page() just before it renders the chapter. The chapter's text is
+     * the largest paint, and it can move again when the web fonts arrive, so wait
+     * for the fonts, two frames for the paint, then a settle delay and an idle slot.
+     */
     function scheduleLoad() {
         if (scheduled) {
             return;
         }
         scheduled = true;
-        requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(whenIdle, 0)));
+        const fonts = document.fonts?.ready ?? Promise.resolve();
+        fonts.then(() => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(whenIdle, SETTLE_MS))));
     }
 
     const whenIdle = () => (window.requestIdleCallback ? requestIdleCallback(load, { timeout: 4000 }) : setTimeout(load, 1500));
