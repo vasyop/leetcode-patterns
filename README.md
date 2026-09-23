@@ -16,7 +16,10 @@ under `content/` is readable from the site either way.
 | `assets/app.js`               | Router, markdown rendering, outline, search. No build step.            |
 | `content/`                    | The book itself — **generated, do not edit here.**                     |
 | `content/manifest.json`       | Chapter order, titles and word counts, rewritten on every publish.     |
-| `.github/workflows/pages.yml` | Assembles `_site/` and deploys it to Pages on every push to `main`.    |
+| `.nojekyll`                   | Stops Pages running the tree through Jekyll, which drops `_` paths.    |
+
+There is no build step and no deploy workflow: Pages serves this branch directly, so a push to
+`main` is the deploy.
 
 ## Where the chapters come from
 
