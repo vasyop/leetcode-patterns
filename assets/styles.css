@@ -148,32 +148,6 @@ kbd {
     border-bottom: 1px solid var(--border-soft);
 }
 
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--text);
-    font-weight: 650;
-    letter-spacing: -0.015em;
-    flex: none;
-}
-
-.brand:hover {
-    text-decoration: none;
-}
-
-.brand-mark {
-    width: 26px;
-    height: 26px;
-    color: var(--brand);
-    stroke: none;
-    flex: none;
-}
-
-.brand-text {
-    font-size: 15px;
-}
-
 .icon-btn {
     display: inline-grid;
     place-items: center;
@@ -1110,9 +1084,6 @@ kbd {
     }
     .menu-btn {
         display: inline-grid;
-    }
-    .brand-text {
-        display: none;
     }
     .search-trigger {
         width: 36px;
