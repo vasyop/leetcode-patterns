@@ -357,6 +357,7 @@
     async function show({ route, hash }) {
         const token = ++renderToken;
         const page = byRoute.get(route || 'README');
+        const newChapter = route !== currentRoute;
         currentRoute = route;
 
         if (!page) {
@@ -410,10 +411,13 @@
             /* private mode */
         }
 
+        // the stylesheet scrolls smoothly, which suits a heading link within a chapter;
+        // a new chapter should just open at its place, so that jump is instant
+        const behavior = newChapter ? 'instant' : 'smooth';
         if (hash) {
-            document.getElementById(hash)?.scrollIntoView();
+            document.getElementById(hash)?.scrollIntoView({ behavior });
         } else {
-            window.scrollTo({ top: 0, behavior: 'auto' });
+            window.scrollTo({ top: 0, behavior });
         }
         closeDrawer();
     }
