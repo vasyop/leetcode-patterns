@@ -1,7 +1,7 @@
 {
     "title": "LeetCode Patterns",
     "site": "https://vasyop.github.io/leetcode-patterns/",
-    "generated": "2026-09-23T05:37:07.815Z",
+    "generated": "2026-09-23T08:08:01.550Z",
     "pages": [
         {
             "path": "README.md",
@@ -9,7 +9,7 @@
             "title": "Contents",
             "number": null,
             "listed": true,
-            "words": 168
+            "words": 91
         },
         {
             "path": "01-introduction.md",
