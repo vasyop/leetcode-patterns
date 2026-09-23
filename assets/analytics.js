@@ -6,6 +6,13 @@
  * property. Filter recordings and insights on that property (or on
  * `$host = vasyop.github.io`) to see the book on its own.
  *
+ * Nothing is loaded or recorded unless the URL carries `?utm_source=<value>`, so
+ * only visitors who arrive through a tagged link (an ad, a post) are tracked,
+ * and the author reading the plain URL never shows up. The value is registered
+ * on every event as `utm_source`, so recordings can be filtered by it. The
+ * viewer only ever changes the hash, so the query survives chapter changes and
+ * reloads within the visit.
+ *
  * The SDK waits until the first chapter has painted and the main thread is idle.
  * Waiting for `load` alone is not enough: it fires before the viewer has even
  * fetched the chapter, so the SDK and recorder would compete with it. Pageviews
@@ -20,8 +27,10 @@
     const SDK_URL = 'https://eu-assets.i.posthog.com/static/array.js';
     const SITE = 'book';
 
-    // keep a local preview out of the numbers
-    if (!/\.github\.io$/.test(location.hostname)) {
+    const SOURCE = new URLSearchParams(location.search).get('utm_source')?.trim();
+
+    // keep local previews and untagged visits (the author's own, say) out of the numbers
+    if (!/\.github\.io$/.test(location.hostname) || !SOURCE) {
         window.bookAnalytics = { page() {} };
         return;
     }
@@ -96,7 +105,7 @@
                     maskAllInputs: false,
                 },
                 loaded: (instance) => {
-                    instance.register({ site: SITE });
+                    instance.register({ site: SITE, utm_source: SOURCE });
                     posthog = instance;
                     for (const [route, title] of pending.splice(0)) {
                         capturePage(route, title);
