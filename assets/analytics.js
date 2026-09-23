@@ -13,11 +13,12 @@
  * viewer only ever changes the hash, so the query survives chapter changes and
  * reloads within the visit.
  *
- * The SDK waits until the first chapter has painted and the main thread is idle.
- * Waiting for `load` alone is not enough: it fires before the viewer has even
- * fetched the chapter, so the SDK and recorder would compete with it. Pageviews
- * are captured by hand from app.js, because the viewer routes through the hash
- * and only a chapter change counts as a new page.
+ * This runs from <head> and starts the SDK download straight away, so the
+ * recorder is up as early as possible and misses as little of the visit as it
+ * can. That costs some page load time, which is an accepted trade. Pageviews are
+ * captured by hand from app.js, because the viewer routes through the hash and
+ * only a chapter change counts as a new page; any that come before the SDK is
+ * ready are queued.
  */
 (() => {
     'use strict';
@@ -51,39 +52,11 @@
                 capturePage(route, title);
             } else {
                 pending.push([route, title]);
-                scheduleLoad();
             }
         },
     };
 
-    let scheduled = false;
-    let started = false;
-
-    // Once the recorder starts it snapshots the whole page, so starting a little
-    // late loses nothing on screen, only the first seconds of scrolling.
-    const SETTLE_MS = 2000;
-
-    /*
-     * app.js calls page() just before it renders the chapter. The chapter's text is
-     * the largest paint, and it can move again when the web fonts arrive, so wait
-     * for the fonts, two frames for the paint, then a settle delay and an idle slot.
-     */
-    function scheduleLoad() {
-        if (scheduled) {
-            return;
-        }
-        scheduled = true;
-        const fonts = document.fonts?.ready ?? Promise.resolve();
-        fonts.then(() => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(whenIdle, SETTLE_MS))));
-    }
-
-    const whenIdle = () => (window.requestIdleCallback ? requestIdleCallback(load, { timeout: 4000 }) : setTimeout(load, 1500));
-
     function load() {
-        if (started) {
-            return;
-        }
-        started = true;
         const script = document.createElement('script');
         script.src = SDK_URL;
         script.async = true;
@@ -116,6 +89,5 @@
         document.head.append(script);
     }
 
-    // a page that never renders a chapter (the manifest failed, say) still gets recorded
-    window.addEventListener('load', () => setTimeout(whenIdle, 5000), { once: true });
+    load();
 })();
