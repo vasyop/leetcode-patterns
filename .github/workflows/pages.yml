@@ -1,6 +1,5 @@
 name: Deploy the book site
 
-# The repository is private; the Pages site it publishes is public.
 on:
     push:
         branches: [main]
@@ -25,7 +24,7 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
-            # assemble explicitly, so .git and .github never reach the public site
+            # assemble explicitly, so .git and .github never reach the published site
             - name: Assemble the site
               run: |
                   mkdir -p _site

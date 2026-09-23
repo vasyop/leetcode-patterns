@@ -3,7 +3,9 @@
 The site behind **[LeetCode Patterns](https://vasyop.github.io/leetcode-patterns/)** — a book about
 the patterns behind LeetCode problems.
 
-This repository is private. The GitHub Pages site it publishes is public.
+The repository is public because GitHub Pages only serves a private repository on a paid plan.
+That costs nothing in practice: the viewer fetches the chapters over `fetch()`, so everything
+under `content/` is readable from the site either way.
 
 ## What lives where
 
