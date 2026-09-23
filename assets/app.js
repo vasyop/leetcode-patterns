@@ -352,6 +352,8 @@
 
     let renderToken = 0;
 
+    let trackedRoute = null;
+
     async function show({ route, hash }) {
         const token = ++renderToken;
         const page = byRoute.get(route || 'README');
@@ -376,6 +378,11 @@
         }
         if (token !== renderToken) {
             return; // the reader moved on while this was in flight
+        }
+        if (route !== trackedRoute) {
+            // jumping to a heading changes the hash too, but it is the same page
+            trackedRoute = route;
+            window.bookAnalytics?.page(route, page.title);
         }
 
         el.doc.innerHTML = window.marked.parse(markdown);
