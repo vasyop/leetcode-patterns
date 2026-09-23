@@ -179,10 +179,11 @@
             if (!lang) {
                 // an indented block with no language: an ASCII diagram, not source
                 wrap.classList.add('is-diagram');
-            } else {
+            } else if (lang !== 'ts' && lang !== 'typescript') {
+                // the book is written in TypeScript, so only other languages get a label
                 const label = document.createElement('span');
                 label.className = 'code-lang';
-                label.textContent = lang === 'ts' ? 'typescript' : lang;
+                label.textContent = lang;
                 wrap.append(label);
             }
 
