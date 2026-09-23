@@ -1,7 +1,17 @@
 {
     "title": "LeetCode Patterns",
     "site": "https://vasyop.github.io/leetcode-patterns/",
-    "generated": "2026-09-23T05:03:57.043Z",
+    "generated": "2026-09-23T05:06:55.402Z",
+    "sections": [
+        {
+            "key": "animations",
+            "label": "Animations"
+        },
+        {
+            "key": "leetcode-posts",
+            "label": "LeetCode posts"
+        }
+    ],
     "pages": [
         {
             "path": "README.md",
